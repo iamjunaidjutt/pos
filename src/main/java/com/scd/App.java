@@ -7,5 +7,6 @@ package com.scd;
 public class App {
     public static void main(String[] args) {
         System.out.println("POS-Pharmacy");
+        System.out.println("Hey committing now!");
     }
 }
