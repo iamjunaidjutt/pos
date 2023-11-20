@@ -1,5 +1,6 @@
 package com.scd;
 
+import java.util.Locale.Category;
 import java.util.Objects;
 
 public class Product {
@@ -8,6 +9,8 @@ public class Product {
     private String description;
     private double price;
     private int stockQuantity;
+
+    private Category category;
 
     public Product(String code, String name, String description, double price, int stockQuantity) {
         this.code = code;
@@ -26,13 +29,6 @@ public class Product {
         }
     }
 
-    public double getCurrentPrice() {
-        return price;
-    }
-
-    public Item createItem(int quantityOrdered) {
-        return new Item(this, quantityOrdered);
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -46,5 +42,65 @@ public class Product {
     public int hashCode() {
         return Objects.hash(code);
     }
-}
 
+
+     public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public int getStockQuantity() {
+        return stockQuantity;
+    }
+
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+
+
+    public double getCurrentPrice() {
+        return price;
+    }
+
+    public Item createItem(int quantityOrdered) {
+        return new Item(this, quantityOrdered);
+    }
+
+
+}
