@@ -1,11 +1,11 @@
-package com.scd;
+package com.scd.Models;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
     private List<Product> products;
-    private int threshold;  
+    private int threshold;
 
     public Inventory(int threshold) {
         this.products = new ArrayList<>();
@@ -40,4 +40,3 @@ public class Inventory {
     }
 
 }
-
