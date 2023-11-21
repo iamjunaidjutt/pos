@@ -30,8 +30,7 @@ public class User {
     @Column(name = "password")
     private String password;
 
-    @Column(name = "role")
-    @ColumnDefault(value = "User")
+    @Column(name = "role", columnDefinition = "varchar(255) default 'User'")
     private String role;
 
     public UUID getId() {
