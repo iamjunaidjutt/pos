@@ -4,7 +4,7 @@ import com.scd.Models.Role;
 
 public class SalesAssistant extends Role {
     public SalesAssistant() {
-        this.role = "sales_assistant";
+        this.role = "SALES_ASSISTANT";
     }
 
     @Override

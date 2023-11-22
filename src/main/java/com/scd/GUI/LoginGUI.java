@@ -85,22 +85,22 @@ public class LoginGUI extends JFrame implements ActionListener {
         registerLink.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // Handle the click event, e.g., open a registration form
-                JOptionPane.showMessageDialog(null, "Redirect to registration form");
+                System.out.println("Redirect to registration form");
                 RegisterGUI registerGUI = new RegisterGUI();
+                System.out.println("RegisterGUI created");
                 registerGUI.setVisible(true);
+                System.out.println("RegisterGUI made visible");
                 setVisible(false);
+
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                // Change text color on hover
                 registerLink.setForeground(Color.RED);
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                // Restore text color when not hovering
                 registerLink.setForeground(Color.BLUE);
             }
         });
@@ -132,7 +132,9 @@ public class LoginGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {
             String username = usernameField.getText();
-            String password = passwordField.getText();
+            char[] passwordChars = passwordField.getPassword();
+            String password = new String(passwordChars);
+
             if (login.login(username, password)) {
                 HomeGUI homeGUI = new HomeGUI();
                 homeGUI.setVisible(true);

@@ -11,6 +11,11 @@ public class Register {
     }
 
     public boolean register(User user) {
+        System.out.println(user);
         return userDAO.create(user);
+    }
+
+    public boolean checkUsername(String username) {
+        return userDAO.checkUsername(username);
     }
 }

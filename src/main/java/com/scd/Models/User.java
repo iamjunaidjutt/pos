@@ -3,11 +3,14 @@ package com.scd.Models;
 import java.util.UUID;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -29,10 +32,21 @@ public class User {
     @Column(name = "user_password")
     private String password;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id")
     private Role role;
+
+    @Override
+    public String toString() {
+        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+    }
 
     public UUID getId() {
         return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getUsername() {
@@ -51,21 +65,11 @@ public class User {
         this.password = password;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
     public void setRole(Role role) {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+    public Object getRole() {
+        return role.getRole();
     }
-
 }

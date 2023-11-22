@@ -4,7 +4,7 @@ import com.scd.Models.Role;
 
 public class Manager extends Role {
     public Manager() {
-        this.role = "manager";
+        this.role = "MANAGER";
     }
 
     @Override
