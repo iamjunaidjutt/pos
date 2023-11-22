@@ -12,7 +12,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ColumnDefault;
 
 @Entity
 @Table(name = "users")
@@ -24,14 +23,13 @@ public class User {
     @Column(name = "user_id", updatable = false, nullable = false)
     private UUID id;
 
-    @Column(name = "username")
+    @Column(name = "user_name")
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "user_password")
     private String password;
 
-    @Column(name = "role", columnDefinition = "varchar(255) default 'User'")
-    private String role;
+    private Role role;
 
     public UUID getId() {
         return id;
@@ -53,11 +51,15 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
