@@ -1,13 +1,85 @@
 package com.scd.Models;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 
+import javax.persistence.Cacheable;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+@Entity
+@Table(name = "categories")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Category {
-    private String code;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "c_code", updatable = false, nullable = false)
+    private UUID code;
+
+    @Column(name = "c_name")
     private String name;
+
+    @Column(name = "c_description")
     private String description;
+
+    @Column(name = "c_subcategories")
     private List<Category> subcategories;
+
+    @Column(name = "c_products")
     private List<Product> products;
+
+    public UUID getCode() {
+        return code;
+    }
+
+    public void setCode(UUID code) {
+        this.code = code;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<Category> getSubcategories() {
+        return subcategories;
+    }
+
+    public void setSubcategories(List<Category> subcategories) {
+        this.subcategories = subcategories;
+    }
+
+    public List<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
+
+    @Override
+    public String toString() {
+        return "Category [code=" + code + ", name=" + name + ", description=" + description + ", subcategories="
+                + subcategories + ", products=" + products + "]";
+    }
+
 }

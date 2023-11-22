@@ -1,19 +1,21 @@
-package com.scd.Models;
+package com.scd.Business;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Inventory {
+import com.scd.Models.Product;
+
+public class InventoryManagement {
     private List<Product> products;
     private int threshold;
 
-    public Inventory(int threshold) {
+    public InventoryManagement(int threshold) {
         this.products = new ArrayList<>();
         this.threshold = threshold;
     }
 
     public void updateProductQuantityAfterSale(Product product, int soldQuantity) {
-        product.updateStock(soldQuantity);
+        // product.updateStock(soldQuantity);
         checkLowStock(product);
     }
 
