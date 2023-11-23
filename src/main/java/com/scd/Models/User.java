@@ -3,16 +3,19 @@ package com.scd.Models;
 import java.util.UUID;
 
 import javax.persistence.Cacheable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "users")
@@ -22,19 +25,21 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id", updatable = false, nullable = false)
-    private UUID id;
+    private UUID uuid;
 
-    @Column(name = "username")
+    @Column(name = "user_name")
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "user_password")
     private String password;
 
-    @Column(name = "role", columnDefinition = "varchar(255) default 'User'")
-    private String role;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "role_id")
+    private Role role;
 
-    public UUID getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "User [uuid=" + uuid + ", username=" + username + ", password=" + password + ", role=" + role + "]";
     }
 
     public String getUsername() {
@@ -53,17 +58,19 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 
-    @Override
-    public String toString() {
-        return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";
+    public Object getRole() {
+        return role.getRole();
     }
 
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
 }
