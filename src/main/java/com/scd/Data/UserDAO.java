@@ -7,7 +7,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.scd.Models.User;
@@ -106,12 +105,14 @@ public class UserDAO implements DAO {
         try {
             em.getTransaction().begin();
             TypedQuery<User> query = em.createQuery(
-                    "SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class)
+                    "SELECT u FROM User u JOIN FETCH u.role WHERE u.username = :username AND u.password = :password",
+                    User.class)
                     .setParameter("username", username)
                     .setParameter("password", password)
                     .setMaxResults(1);
             User user = query.getSingleResult();
             em.getTransaction().commit();
+
             return user != null;
         } catch (Exception e) {
             System.out.println("Error authenticating user: " + e.getMessage());
@@ -128,7 +129,8 @@ public class UserDAO implements DAO {
         try {
             em.getTransaction().begin();
             TypedQuery<User> query = em.createQuery(
-                    "SELECT u FROM User u WHERE u.username = :username AND u.password = :password", User.class)
+                    "SELECT u FROM User u JOIN FETCH u.role WHERE u.username = :username AND u.password = :password",
+                    User.class)
                     .setParameter("username", username)
                     .setParameter("password", password)
                     .setMaxResults(1);
@@ -148,14 +150,12 @@ public class UserDAO implements DAO {
     public boolean checkUsername(String username) {
         EntityManager em = getEntityManager();
         try {
-            System.out.println(username);
             em.getTransaction().begin();
-            TypedQuery<User> query = em.createQuery(
-                    "SELECT u FROM User u WHERE u.username = :username", User.class)
+            TypedQuery<User> query = em
+                    .createQuery("SELECT u FROM User u JOIN FETCH u.role WHERE u.username = :username", User.class)
                     .setParameter("username", username)
                     .setMaxResults(1);
             User user = query.getSingleResult();
-            System.out.println(user);
             em.getTransaction().commit();
             return user != null;
         } catch (NoResultException e) {

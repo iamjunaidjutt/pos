@@ -155,10 +155,10 @@ public class RegisterGUI extends JFrame implements ActionListener {
 
             if (register.register(user)) {
                 JOptionPane.showMessageDialog(null, "Register successfully");
-                setVisible(false);
                 // dispose();
                 LoginGUI loginGUI = new LoginGUI();
                 loginGUI.setVisible(true);
+                setVisible(false);
             } else {
                 JOptionPane.showMessageDialog(null, "Register failed");
             }

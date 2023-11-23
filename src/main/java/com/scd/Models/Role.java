@@ -12,31 +12,24 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "roles")
 @Cacheable
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public abstract class Role {
+public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "role_id", updatable = false, nullable = false)
-    protected UUID id;
+    protected UUID uuid;
 
     @Column(name = "user_role")
     protected String role;
 
     @Override
     public String toString() {
-        return "Role [id=" + id + ", role=" + role + "]";
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
+        return "Role [uuid=" + uuid + ", role=" + role + "]";
     }
 
     public String getRole() {
@@ -49,5 +42,13 @@ public abstract class Role {
 
     public boolean permission(String permission) {
         return false;
+    }
+
+    public UUID getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
     }
 }

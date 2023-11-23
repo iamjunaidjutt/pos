@@ -12,6 +12,7 @@
 
         <!-- Specify the classes (entities) managed by this persistence unit -->
         <class>com.scd.Models.User</class>
+        <class>com.scd.Models.Role</class>
 
         <!-- Additional properties for Hibernate -->
         <properties>
