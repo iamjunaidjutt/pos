@@ -1,7 +1,5 @@
 package com.scd.Models;
 
-import java.util.Locale.Category;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;

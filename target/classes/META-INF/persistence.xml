@@ -13,6 +13,9 @@
         <!-- Specify the classes (entities) managed by this persistence unit -->
         <class>com.scd.Models.User</class>
         <class>com.scd.Models.Role</class>
+        <class>com.scd.Models.Product</class>
+        <class>com.scd.Models.Item</class>
+        <class>com.scd.Models.Category</class>
 
         <!-- Additional properties for Hibernate -->
         <properties>

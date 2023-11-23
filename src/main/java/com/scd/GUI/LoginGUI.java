@@ -136,8 +136,8 @@ public class LoginGUI extends JFrame implements ActionListener {
             String password = new String(passwordChars);
 
             if (login.login(username, password)) {
-                HomeGUI homeGUI = new HomeGUI();
-                homeGUI.setVisible(true);
+                Dashboard dashboard = new Dashboard();
+                dashboard.setVisible(true);
                 setVisible(false);
             } else if (username.equals("") || password.equals("")) {
                 JOptionPane.showMessageDialog(null, "Please fill in all fields");

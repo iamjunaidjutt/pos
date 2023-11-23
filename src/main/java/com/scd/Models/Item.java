@@ -1,15 +1,30 @@
 package com.scd.Models;
 
+import java.util.UUID;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "items")
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "item_code", updatable = false, nullable = false)
+    private UUID code;
+
     @ManyToOne
     private Product product;
+
+    @Column(name = "item_price")
     private double price;
+
+    @Column(name = "item_quantity_ordered")
     private int quantityOrdered;
 
     public Product getProduct() {
