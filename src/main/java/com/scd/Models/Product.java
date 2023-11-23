@@ -48,7 +48,6 @@ public class Product {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
-    @Column(name = "p_categories")
     @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
     private List<Category> categories;
 

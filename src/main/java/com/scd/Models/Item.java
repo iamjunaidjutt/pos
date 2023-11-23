@@ -1,6 +1,13 @@
 package com.scd.Models;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "items")
 public class Item {
+    @ManyToOne
     private Product product;
     private double price;
     private int quantityOrdered;

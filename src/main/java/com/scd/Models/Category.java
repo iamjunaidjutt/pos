@@ -6,9 +6,13 @@ import java.util.UUID;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -30,10 +34,11 @@ public class Category {
     @Column(name = "c_description")
     private String description;
 
-    @Column(name = "c_subcategories")
+    @ManyToMany
+    @JoinTable(name = "subcategory_relationship", joinColumns = @JoinColumn(name = "parent_category_id"), inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
     private List<Category> subcategories;
 
-    @Column(name = "c_products")
+    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     private List<Product> products;
 
     public UUID getCode() {
