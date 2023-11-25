@@ -1,16 +1,14 @@
 package com.scd.Models;
 
-import java.util.UUID;
-
 public class Customer {
-    private UUID id;
+    private int id;
     private String name;
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
 

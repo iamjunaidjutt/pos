@@ -15,21 +15,19 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "products")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "p_code", updatable = false, nullable = false)
-    private UUID code;
+    private int code;
 
-    @Column(name = "p_name")
+    @Column(name = "p_name", unique = true)
     private String name;
 
     @Column(name = "p_description")
@@ -44,17 +42,11 @@ public class Product {
     @Column(name = "p_expiration_date")
     private Date expirationDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @Cascade(CascadeType.ALL)
-    @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-    private List<Category> categories;
+    @ManyToMany(cascade = javax.persistence.CascadeType.ALL)
+    private Collection<Category> categories = new ArrayList<>();
 
-    public UUID getCode() {
+    public int getCode() {
         return code;
-    }
-
-    public void setCode(UUID code) {
-        this.code = code;
     }
 
     public String getName() {
@@ -93,23 +85,26 @@ public class Product {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date expirationDate) {
-        this.expirationDate = expirationDate;
+    public void setExpirationDate(Date string) {
+        this.expirationDate = string;
     }
 
-    public List<Category> getCategories() {
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public Collection<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(List<Category> categories) {
+    public void setCategories(Collection<Category> categories) {
         this.categories = categories;
     }
 
     @Override
     public String toString() {
         return "Product [code=" + code + ", name=" + name + ", description=" + description + ", price=" + price
-                + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate + ", categories="
-                + categories + "]";
+                + ", stockQuantity=" + stockQuantity + ", expirationDate=" + expirationDate + "]";
     }
 
 }

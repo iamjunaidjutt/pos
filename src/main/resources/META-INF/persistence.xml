@@ -29,6 +29,12 @@
             <!-- Automatically validate or export/update the database schema -->
             <property name="hibernate.hbm2ddl.auto" value="update" />
 
+            <!-- Add configuration for second level cache -->
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+            <property name="hibernate.cache.region.factory_class"
+                value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+
+
             <!-- Specify the JDBC connection properties for MySQL -->
             <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver" />
             <property name="hibernate.connection.url"

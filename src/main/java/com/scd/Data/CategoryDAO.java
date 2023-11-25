@@ -1,97 +1,136 @@
 package com.scd.Data;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.EntityTransaction;
 
+import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Category;
+import com.scd.Models.Product;
 
 public class CategoryDAO implements DAO {
-    private EntityManagerFactory emf;
-
-    public CategoryDAO() {
-        emf = Persistence.createEntityManagerFactory("pu");
-    }
-
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public EntityManager getEntityManager() {
+        return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }
 
     @Override
-    public boolean create(Object obj) {
+    public boolean save(Object obj) {
         Category category = (Category) obj;
-        EntityManager em = getEntityManager();
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            em.getTransaction().begin();
-            em.persist(category);
-            em.getTransaction().commit();
+            transaction.begin();
+            entityManager.persist(category);
+            transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error creating category: " + e.getMessage());
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
         }
     }
 
     @Override
-    public List<Object> read() {
-        List<Object> categories = null;
-        EntityManager em = getEntityManager();
+    public Collection<Object> getAll() {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            em.getTransaction().begin();
-            categories = em.createQuery("SELECT c FROM Category c", Object.class).getResultList();
-            em.getTransaction().commit();
+            transaction.begin();
+            List<Object> categories = entityManager.createQuery("from Category", Object.class).getResultList();
+            transaction.commit();
             return categories;
         } catch (Exception e) {
-            System.out.println("Error reading categories: " + e.getMessage());
-            return categories;
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
+        }
+    }
+
+    public Category getById(int id) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Category category = entityManager.find(Category.class, id);
+            transaction.commit();
+            return category;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
         }
     }
 
     @Override
     public boolean update(Object obj) {
         Category category = (Category) obj;
-        EntityManager em = getEntityManager();
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            em.getTransaction().begin();
-            em.merge(category);
-            em.getTransaction().commit();
+            transaction.begin();
+            entityManager.merge(category);
+            transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error updating category: " + e.getMessage());
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
         }
     }
 
     @Override
-    public boolean delete(UUID id) {
-        EntityManager em = getEntityManager();
+    public boolean delete(int id) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            em.getTransaction().begin();
-            em.remove(em.find(Category.class, id));
-            em.getTransaction().commit();
+            transaction.begin();
+            Category category = entityManager.find(Category.class, id);
+            entityManager.remove(category);
+            transaction.commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error deleting category: " + e.getMessage());
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
+        }
+    }
+
+    public boolean addSubCategory(Category category, Category subCategory) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Category category2 = entityManager.find(Category.class, category.getCode());
+            category2.getSubcategories().add(subCategory);
+            entityManager.merge(category2);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return false;
+        } finally {
+            entityManager.close();
         }
     }
 

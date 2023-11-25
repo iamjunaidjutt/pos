@@ -1,14 +1,13 @@
 package com.scd.Data;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Collection;
 
 public interface DAO {
-    public boolean create(Object obj);
+    public boolean save(Object obj);
 
-    public List<Object> read();
+    public Collection<Object> getAll();
 
     public boolean update(Object obj);
 
-    public boolean delete(UUID id);
+    public boolean delete(int id);
 }

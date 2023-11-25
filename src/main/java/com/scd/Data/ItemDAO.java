@@ -1,97 +1,136 @@
 package com.scd.Data;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
+import javax.persistence.EntityTransaction;
 
+import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Item;
+import com.scd.Models.Product;
 
 public class ItemDAO implements DAO {
-    private EntityManagerFactory emf;
-
-    public ItemDAO() {
-        emf = Persistence.createEntityManagerFactory("pu");
-    }
-
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public EntityManager getEntityManager() {
+        return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }
 
     @Override
-    public boolean create(Object obj) {
+    public boolean save(Object obj) {
         Item item = (Item) obj;
-        EntityManager em = getEntityManager();
+        EntityManager entityManager = getEntityManager();
         try {
-            em.getTransaction().begin();
-            em.persist(item);
-            em.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            entityManager.persist(item);
+            entityManager.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error creating item: " + e.getMessage());
+            e.printStackTrace();
+            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
+                entityManager.getTransaction().rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
         }
     }
 
     @Override
-    public List<Object> read() {
-        List<Object> items = null;
-        EntityManager em = getEntityManager();
+    public Collection<Object> getAll() {
+        EntityManager entityManager = getEntityManager();
         try {
-            em.getTransaction().begin();
-            items = em.createQuery("SELECT i FROM Item i", Object.class).getResultList();
-            em.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            Collection<Object> items = entityManager.createQuery("from Item", Object.class)
+                    .getResultList();
+            entityManager.getTransaction().commit();
             return items;
         } catch (Exception e) {
-            System.out.println("Error reading items: " + e.getMessage());
-            return items;
+            e.printStackTrace();
+            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
+                entityManager.getTransaction().rollback();
+            return null;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
         }
     }
 
     @Override
     public boolean update(Object obj) {
         Item item = (Item) obj;
-        EntityManager em = getEntityManager();
+        EntityManager entityManager = getEntityManager();
         try {
-            em.getTransaction().begin();
-            em.merge(item);
-            em.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            entityManager.merge(item);
+            entityManager.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error updating item: " + e.getMessage());
+            e.printStackTrace();
+            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
+                entityManager.getTransaction().rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
         }
     }
 
     @Override
-    public boolean delete(UUID id) {
-        EntityManager em = getEntityManager();
+    public boolean delete(int id) {
+        EntityManager entityManager = getEntityManager();
         try {
-            em.getTransaction().begin();
-            em.remove(em.find(Item.class, id));
-            em.getTransaction().commit();
+            entityManager.getTransaction().begin();
+            Item item = entityManager.find(Item.class, id);
+
+            ProductDAO productDAO = new ProductDAO();
+            boolean product = productDAO.delete(item.getProduct().getCode());
+            if (product)
+                entityManager.remove(item);
+            else
+                return false;
+            entityManager.getTransaction().commit();
             return true;
         } catch (Exception e) {
-            System.out.println("Error deleting item: " + e.getMessage());
+            e.printStackTrace();
+            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
+                entityManager.getTransaction().rollback();
             return false;
         } finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
+            entityManager.close();
+        }
+    }
+
+    public Item getById(int id) {
+        EntityManager entityManager = getEntityManager();
+        try {
+            entityManager.getTransaction().begin();
+            Item item = entityManager.find(Item.class, id);
+            entityManager.getTransaction().commit();
+            return item;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
+                entityManager.getTransaction().rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public boolean saveItemWithProduct(Item item, Product detacheProduct) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Product product = entityManager.find(Product.class, detacheProduct.getCode());
+            item.setProduct(product);
+            entityManager.persist(item);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return false;
+        } finally {
+            entityManager.close();
         }
     }
 

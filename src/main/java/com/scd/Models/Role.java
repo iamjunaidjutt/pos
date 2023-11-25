@@ -1,7 +1,5 @@
 package com.scd.Models;
 
-import java.util.UUID;
-
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,7 +10,6 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Table(name = "roles")
@@ -22,14 +19,14 @@ public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "role_id", updatable = false, nullable = false)
-    protected UUID uuid;
+    protected int id;
 
     @Column(name = "user_role")
     protected String role;
 
     @Override
     public String toString() {
-        return "Role [uuid=" + uuid + ", role=" + role + "]";
+        return "Role [id=" + id + ", role=" + role + "]";
     }
 
     public String getRole() {
@@ -44,11 +41,12 @@ public class Role {
         return false;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public int getId() {
+        return id;
     }
 
-    public void setUuid(UUID uuid) {
-        this.uuid = uuid;
+    public void setId(int id) {
+        this.id = id;
     }
+
 }

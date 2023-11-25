@@ -1,12 +1,10 @@
 package com.scd.Models;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.Collection;
 
-import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,20 +13,15 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
 @Entity
 @Table(name = "categories")
-@Cacheable
-@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "c_code", updatable = false, nullable = false)
-    private UUID code;
+    private int code;
 
-    @Column(name = "c_name")
+    @Column(name = "c_name", unique = true)
     private String name;
 
     @Column(name = "c_description")
@@ -36,16 +29,16 @@ public class Category {
 
     @ManyToMany
     @JoinTable(name = "subcategory_relationship", joinColumns = @JoinColumn(name = "parent_category_id"), inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
-    private List<Category> subcategories;
+    private Collection<Category> subcategories = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
-    private List<Product> products;
+    @ManyToMany(mappedBy = "categories", cascade = javax.persistence.CascadeType.ALL)
+    private Collection<Product> products = new ArrayList<>();
 
-    public UUID getCode() {
+    public int getCode() {
         return code;
     }
 
-    public void setCode(UUID code) {
+    public void setCode(int code) {
         this.code = code;
     }
 
@@ -65,19 +58,19 @@ public class Category {
         this.description = description;
     }
 
-    public List<Category> getSubcategories() {
+    public Collection<Category> getSubcategories() {
         return subcategories;
     }
 
-    public void setSubcategories(List<Category> subcategories) {
+    public void setSubcategories(Collection<Category> subcategories) {
         this.subcategories = subcategories;
     }
 
-    public List<Product> getProducts() {
+    public Collection<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(List<Product> products) {
+    public void setProducts(Collection<Product> products) {
         this.products = products;
     }
 

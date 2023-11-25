@@ -1,13 +1,11 @@
 package com.scd.Models;
 
-import java.util.UUID;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -16,9 +14,9 @@ public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "item_code", updatable = false, nullable = false)
-    private UUID code;
+    private int code;
 
-    @ManyToOne
+    @OneToOne(cascade = javax.persistence.CascadeType.ALL)
     private Product product;
 
     @Column(name = "item_price")
@@ -54,6 +52,14 @@ public class Item {
     @Override
     public String toString() {
         return "Item [product=" + product + ", price=" + price + ", quantityOrdered=" + quantityOrdered + "]";
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
     }
 
 }

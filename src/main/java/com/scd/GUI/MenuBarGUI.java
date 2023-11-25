@@ -54,6 +54,9 @@ public class MenuBarGUI extends JMenuBar implements ActionListener {
         updateItem.addActionListener(this);
         listItems.addActionListener(this);
 
+        // Add third menu as Inventory
+        JMenu inventoryMenu = new JMenu("Inventory");
+
         // Add menus in menu bar
         add(fileMenu);
         add(itemMenu);

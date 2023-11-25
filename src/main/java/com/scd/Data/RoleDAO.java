@@ -1,27 +1,20 @@
 package com.scd.Data;
 
 import java.util.List;
-import java.util.UUID;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
 
+import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Role;
 
 public class RoleDAO implements DAO {
-    private EntityManagerFactory emf;
-
-    public RoleDAO() {
-        emf = Persistence.createEntityManagerFactory("pu");
-    }
-
-    private EntityManager getEntityManager() {
-        return emf.createEntityManager();
+    public EntityManager getEntityManager() {
+        return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }
 
     @Override
-    public boolean create(Object obj) {
+    public boolean save(Object obj) {
         Role role = (Role) obj;
         EntityManager em = getEntityManager();
         try {
@@ -40,7 +33,7 @@ public class RoleDAO implements DAO {
     }
 
     @Override
-    public List<Object> read() {
+    public List<Object> getAll() {
         List<Object> roles = null;
         EntityManager em = getEntityManager();
         try {
@@ -78,7 +71,7 @@ public class RoleDAO implements DAO {
     }
 
     @Override
-    public boolean delete(UUID id) {
+    public boolean delete(int id) {
         EntityManager em = getEntityManager();
         try {
             em.getTransaction().begin();
