@@ -15,9 +15,9 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -40,10 +40,11 @@ public class Product {
     private int stockQuantity;
 
     @Column(name = "p_expiration_date")
-    private Date expirationDate;
+    private LocalDateTime expirationDate;
 
-    @ManyToMany(cascade = javax.persistence.CascadeType.ALL)
-    private Collection<Category> categories = new ArrayList<>();
+    @ManyToMany
+    @Cascade(CascadeType.ALL)
+    private List<Category> categories = new ArrayList<>();
 
     public int getCode() {
         return code;
@@ -81,11 +82,11 @@ public class Product {
         this.stockQuantity = stockQuantity;
     }
 
-    public Date getExpirationDate() {
+    public LocalDateTime getExpirationDate() {
         return expirationDate;
     }
 
-    public void setExpirationDate(Date string) {
+    public void setExpirationDate(LocalDateTime string) {
         this.expirationDate = string;
     }
 
@@ -93,11 +94,11 @@ public class Product {
         this.code = code;
     }
 
-    public Collection<Category> getCategories() {
+    public List<Category> getCategories() {
         return categories;
     }
 
-    public void setCategories(Collection<Category> categories) {
+    public void setCategories(List<Category> categories) {
         this.categories = categories;
     }
 

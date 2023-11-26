@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -16,7 +18,7 @@ public class Item {
     @Column(name = "item_code", updatable = false, nullable = false)
     private int code;
 
-    @OneToOne(cascade = javax.persistence.CascadeType.ALL)
+    @OneToOne
     private Product product;
 
     @Column(name = "item_price")
@@ -24,6 +26,10 @@ public class Item {
 
     @Column(name = "item_quantity_ordered")
     private int quantityOrdered;
+
+    @ManyToOne
+    @JoinColumn(name = "cart_id")
+    private Cart cart;
 
     public Product getProduct() {
         return product;

@@ -38,7 +38,7 @@ public class CategoryDAO implements DAO {
     }
 
     @Override
-    public Collection<Object> getAll() {
+    public List<Object> getAll() {
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
@@ -114,24 +114,24 @@ public class CategoryDAO implements DAO {
         }
     }
 
-    public boolean addSubCategory(Category category, Category subCategory) {
-        EntityManager entityManager = getEntityManager();
-        EntityTransaction transaction = entityManager.getTransaction();
-        try {
-            transaction.begin();
-            Category category2 = entityManager.find(Category.class, category.getCode());
-            category2.getSubcategories().add(subCategory);
-            entityManager.merge(category2);
-            transaction.commit();
-            return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (transaction.isActive() && transaction != null)
-                transaction.rollback();
-            return false;
-        } finally {
-            entityManager.close();
-        }
-    }
+    // public boolean addSubCategory(Category category, Category subCategory) {
+    // EntityManager entityManager = getEntityManager();
+    // EntityTransaction transaction = entityManager.getTransaction();
+    // try {
+    // transaction.begin();
+    // Category category2 = entityManager.find(Category.class, category.getCode());
+    // category2.getSubcategories().add(subCategory);
+    // entityManager.merge(category2);
+    // transaction.commit();
+    // return true;
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // if (transaction.isActive() && transaction != null)
+    // transaction.rollback();
+    // return false;
+    // } finally {
+    // entityManager.close();
+    // }
+    // }
 
 }

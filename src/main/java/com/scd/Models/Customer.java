@@ -1,16 +1,12 @@
 package com.scd.Models;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Customer {
-    private int id;
+    @Column(name = "c_name")
     private String name;
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getName() {
         return name;
@@ -22,7 +18,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "Customer [id=" + id + ", name=" + name + "]";
+        return "Customer [name=" + name + "]";
     }
 
 }

@@ -1,6 +1,7 @@
 package com.scd.Data;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -35,11 +36,11 @@ public class ItemDAO implements DAO {
     }
 
     @Override
-    public Collection<Object> getAll() {
+    public List<Object> getAll() {
         EntityManager entityManager = getEntityManager();
         try {
             entityManager.getTransaction().begin();
-            Collection<Object> items = entityManager.createQuery("from Item", Object.class)
+            List<Object> items = entityManager.createQuery("from Item", Object.class)
                     .getResultList();
             entityManager.getTransaction().commit();
             return items;
@@ -75,22 +76,17 @@ public class ItemDAO implements DAO {
     @Override
     public boolean delete(int id) {
         EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            entityManager.getTransaction().begin();
+            transaction.begin();
             Item item = entityManager.find(Item.class, id);
-
-            ProductDAO productDAO = new ProductDAO();
-            boolean product = productDAO.delete(item.getProduct().getCode());
-            if (product)
-                entityManager.remove(item);
-            else
-                return false;
-            entityManager.getTransaction().commit();
+            entityManager.remove(item);
+            transaction.commit();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
-                entityManager.getTransaction().rollback();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
             return false;
         } finally {
             entityManager.close();
@@ -99,15 +95,16 @@ public class ItemDAO implements DAO {
 
     public Item getById(int id) {
         EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
         try {
-            entityManager.getTransaction().begin();
+            transaction.begin();
             Item item = entityManager.find(Item.class, id);
-            entityManager.getTransaction().commit();
+            transaction.commit();
             return item;
         } catch (Exception e) {
             e.printStackTrace();
-            if (entityManager.getTransaction().isActive() && entityManager.getTransaction() != null)
-                entityManager.getTransaction().rollback();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
             return null;
         } finally {
             entityManager.close();
