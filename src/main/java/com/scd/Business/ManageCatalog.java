@@ -12,15 +12,19 @@ import com.scd.Models.Product;
 public class ManageCatalog {
 
     public ManageCatalog() {
-
     }
 
-    public void addCategory(String name, String description) {
+    public boolean addCategory(String name, String description) {
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
         category.setName(name);
         category.setDescription(description);
-        categoryDAO.save(category);
+        return categoryDAO.save(category);
+    }
+
+    public boolean addSubCategory(Category category, Category subCategory) {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        return categoryDAO.addSubCategory(category, subCategory);
     }
 
     public List<Category> getAllCategories() {
@@ -34,6 +38,12 @@ public class ManageCatalog {
         return categories2;
     }
 
+    public List<Category> getAllSubCategories(Category category) {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        List<Category> subCategories = categoryDAO.getSubCategories(category);
+        return subCategories;
+    }
+
     public Category getCategory(int id) {
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
@@ -41,19 +51,19 @@ public class ManageCatalog {
         return category;
     }
 
-    public void updateCategory(int id, String name, String description) {
+    public boolean updateCategory(int id, String name, String description) {
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
         category = categoryDAO.getById(id);
-        categoryDAO.update(category);
+        return categoryDAO.update(category);
     }
 
-    public void deleteCategory(int id) {
+    public boolean deleteCategory(int id) {
         CategoryDAO categoryDAO = new CategoryDAO();
-        categoryDAO.delete(id);
+        return categoryDAO.delete(id);
     }
 
-    public void addProduct(String name, String description, double price, int stockQuantity,
+    public boolean addProduct(String name, String description, double price, int stockQuantity,
             LocalDateTime localDateTime,
             List<Category> categories) {
         ProductDAO productDAO = new ProductDAO();
@@ -65,7 +75,7 @@ public class ManageCatalog {
         product.setExpirationDate(localDateTime);
         product.setCategories(new ArrayList<Category>());
         product.getCategories().addAll(categories);
-        productDAO.update(product);
+        return productDAO.update(product);
     }
 
     public List<Product> getAllProducts() {
@@ -77,6 +87,18 @@ public class ManageCatalog {
             products2.add((Product) object);
         }
         return products2;
+    }
+
+    public Product getProduct(int id) {
+        ProductDAO productDAO = new ProductDAO();
+        Product product = new Product();
+        product = productDAO.getById(id);
+        return product;
+    }
+
+    public static void main(String[] args) {
+        ManageCatalog manageCatalog = new ManageCatalog();
+        System.out.println(manageCatalog.deleteCategory(10));
     }
 
 }

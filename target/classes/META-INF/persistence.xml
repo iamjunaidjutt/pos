@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd"
+    version="2.1">
+    <persistence-unit name="pu" transaction-type="RESOURCE_LOCAL">
+        <!-- Specify the JPA provider -->
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+
+        <!-- Specify the non-JTA data source (if you are not using JTA) -->
+        <!-- <non-jta-data-source>yourNonJtaDataSource</non-jta-data-source> -->
+
+        <!-- Specify the classes (entities) managed by this persistence unit -->
+        <class>com.scd.Models.User</class>
+        <class>com.scd.Models.Role</class>
+        <class>com.scd.Models.Product</class>
+        <class>com.scd.Models.Item</class>
+        <class>com.scd.Models.Category</class>
+
+        <!-- Additional properties for Hibernate -->
+        <properties>
+            <!-- Specify the Hibernate dialect for MySQL -->
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect" />
+
+
+            <!-- Show SQL statements in the console -->
+            <property name="hibernate.show_sql" value="true" />
+
+            <!-- Automatically validate or export/update the database schema -->
+            <property name="hibernate.hbm2ddl.auto" value="update" />
+
+            <!-- Add configuration for second level cache -->
+            <property name="hibernate.cache.use_second_level_cache" value="true" />
+            <property name="hibernate.cache.region.factory_class"
+                value="org.hibernate.cache.ehcache.EhCacheRegionFactory" />
+
+
+            <!-- Specify the JDBC connection properties for MySQL -->
+            <property name="hibernate.connection.driver_class" value="com.mysql.cj.jdbc.Driver" />
+            <property name="hibernate.connection.url"
+                value="jdbc:mysql://localhost:3306/scd_project" />
+            <property name="hibernate.connection.username" value="scd_admin" />
+            <property name="hibernate.connection.password" value="scd13579" />
+
+            <!-- C3P0 connection pool settings (optional) -->
+            <property name="hibernate.c3p0.min_size" value="5" />
+            <property name="hibernate.c3p0.max_size" value="20" />
+            <property name="hibernate.c3p0.timeout" value="300" />
+            <property name="hibernate.c3p0.max_statements" value="50" />
+            <property name="hibernate.c3p0.idle_test_period" value="3000" />
+        </properties>
+    </persistence-unit>
+</persistence>

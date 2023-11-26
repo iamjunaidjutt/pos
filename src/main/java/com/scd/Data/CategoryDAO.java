@@ -114,24 +114,48 @@ public class CategoryDAO implements DAO {
         }
     }
 
-    // public boolean addSubCategory(Category category, Category subCategory) {
-    // EntityManager entityManager = getEntityManager();
-    // EntityTransaction transaction = entityManager.getTransaction();
-    // try {
-    // transaction.begin();
-    // Category category2 = entityManager.find(Category.class, category.getCode());
-    // category2.getSubcategories().add(subCategory);
-    // entityManager.merge(category2);
-    // transaction.commit();
-    // return true;
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // if (transaction.isActive() && transaction != null)
-    // transaction.rollback();
-    // return false;
-    // } finally {
-    // entityManager.close();
-    // }
-    // }
+    public boolean addSubCategory(Category category, Category subCategory) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Category category2 = entityManager.find(Category.class, category.getCode());
+            entityManager.persist(subCategory);
+            category2.getSubcategories().add(subCategory);
+            entityManager.merge(category2);
+            transaction.commit();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return false;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public List<Category> getSubCategories(Category category) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            System.out.println("--> Category: " + category);
+            transaction.begin();
+            Category category2 = entityManager.find(Category.class, category.getCode());
+            List<Category> subCategories = category2.getSubcategories();
+            System.out.println(subCategories);
+            transaction.commit();
+            if (subCategories == null)
+                return new ArrayList<Category>();
+            return subCategories;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
 
 }

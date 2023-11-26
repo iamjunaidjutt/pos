@@ -31,11 +31,10 @@ public class Category {
     @Column(name = "c_description")
     private String description;
 
-    // @ManyToMany
-    // @JoinTable(name = "subcategory_relationship", joinColumns = @JoinColumn(name
-    // = "parent_category_id"), inverseJoinColumns = @JoinColumn(name =
-    // "subcategory_id"))
-    // private List<Category> subcategories = new ArrayList<>();
+    @ManyToMany
+    @Cascade(CascadeType.DELETE)
+    @JoinTable(name = "subcategory_relationship", joinColumns = @JoinColumn(name = "parent_category_id"), inverseJoinColumns = @JoinColumn(name = "subcategory_id"))
+    private List<Category> subcategories = new ArrayList<>();
 
     @ManyToMany(mappedBy = "categories", fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
@@ -65,13 +64,13 @@ public class Category {
         this.description = description;
     }
 
-    // public List<Category> getSubcategories() {
-    // return subcategories;
-    // }
+    public List<Category> getSubcategories() {
+        return subcategories;
+    }
 
-    // public void setSubcategories(List<Category> subcategories) {
-    // this.subcategories = subcategories;
-    // }
+    public void setSubcategories(List<Category> subcategories) {
+        this.subcategories = subcategories;
+    }
 
     public List<Product> getProducts() {
         return products;
