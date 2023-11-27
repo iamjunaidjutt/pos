@@ -7,6 +7,7 @@ import java.util.List;
 import com.scd.Data.CartDAO;
 import com.scd.Data.ItemDAO;
 import com.scd.Data.OrdersDAO;
+import com.scd.Data.ProductDAO;
 import com.scd.Models.Cart;
 import com.scd.Models.Customer;
 import com.scd.Models.Item;
@@ -126,8 +127,23 @@ public class ManageCart {
     }
 
     public boolean cancelOrder(int orderId) {
-        OrdersDAO ordersDAO = new OrdersDAO();
-        return ordersDAO.delete(orderId);
+        try {
+            OrdersDAO ordersDAO = new OrdersDAO();
+            Orders order = ordersDAO.getById(orderId);
+            List<Item> items = order.getItems();
+            for (Item item : items) {
+                int productId = item.getProduct().getCode();
+                int orderedQuantity = item.getQuantityOrdered();
+                ProductDAO productDAO = new ProductDAO();
+                Product product = productDAO.getById(productId);
+                product.setStockQuantity(product.getStockQuantity() + orderedQuantity);
+                productDAO.update(product);
+            }
+            return ordersDAO.delete(orderId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean updateOrderStatus(int orderId, String status) {
@@ -140,23 +156,23 @@ public class ManageCart {
     // public static void main(String[] args) {
     // ManageCart manageCart = new ManageCart();
 
-    // manageCart.addItemToCart(122, 3);
-    // manageCart.addItemToCart(123, 3);
+    // // manageCart.addItemToCart(122, 1);
+    // // manageCart.addItemToCart(123, 2);
 
-    // manageCart.removeItemFromCart(169);
+    // // manageCart.removeItemFromCart(169);
 
-    // manageCart.updateItemQuantity(173, 5);
+    // // manageCart.updateItemQuantity(173, 5);
 
-    // manageCart.clearCart();
+    // // manageCart.clearCart();
 
-    // List<Cart> carts = manageCart.getCartDetails();
-    // for (Cart cart : carts) {
-    // System.out.println(cart);
-    // }
+    // // List<Cart> carts = manageCart.getCartDetails();
+    // // for (Cart cart : carts) {
+    // // System.out.println(cart);
+    // // }
 
-    // manageCart.placeOrder("John Doe");
+    // // manageCart.placeOrder("John Doe");
 
-    // manageCart.cancelOrder(212);
+    // // manageCart.cancelOrder(219);
 
     // List<Orders> orders = manageCart.getOrders();
     // for (Orders order : orders) {
