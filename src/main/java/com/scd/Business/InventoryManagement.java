@@ -23,6 +23,10 @@ public class InventoryManagement {
         this.threshold = threshold;
     }
 
+    public int getthreshold() {
+        return this.threshold;
+    }
+
     private void checkLowStock(Product product) {
         if (product.getStockQuantity() <= threshold) {
             System.out.println("Low stock alert for product: " + product.getName());
