@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+
 @Entity
 @Table(name = "items")
 public class Item {
@@ -19,6 +22,7 @@ public class Item {
     private int code;
 
     @OneToOne
+    @Cascade(CascadeType.MERGE)
     private Product product;
 
     @Column(name = "item_price")
@@ -28,8 +32,13 @@ public class Item {
     private int quantityOrdered;
 
     @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.DELETE)
     @JoinColumn(name = "cart_id")
     private Cart cart;
+
+    @ManyToOne
+    @JoinColumn(name = "order_id")
+    private Orders order;
 
     public Product getProduct() {
         return product;
@@ -66,6 +75,22 @@ public class Item {
 
     public void setCode(int code) {
         this.code = code;
+    }
+
+    public Cart getCart() {
+        return cart;
+    }
+
+    public void setCart(Cart cart) {
+        this.cart = cart;
+    }
+
+    public Orders getOrder() {
+        return order;
+    }
+
+    public void setOrder(Orders order) {
+        this.order = order;
     }
 
 }
