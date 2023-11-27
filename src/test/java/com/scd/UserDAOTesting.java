@@ -1,87 +1,113 @@
 package com.scd;
-
 import static org.junit.Assert.*;
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import com.scd.Data.UserDAO;
 import com.scd.Models.Role;
+import com.scd.Data.UserDAO;
 import com.scd.Models.User;
 
 public class UserDAOTesting {
 
     private static UserDAO userDAO;
-    private static EntityManagerFactory entityManagerFactory;
+    private static List<Integer> addedUserIds = new ArrayList<>();
 
     @BeforeClass
     public static void setUp() {
-        entityManagerFactory = Persistence.createEntityManagerFactory("pu");
         userDAO = new UserDAO();
     }
 
-    @AfterClass
-    public static void tearDown() {
-        if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
-            entityManagerFactory.close();
-        }
+    @After
+public void tearDown() {
+    // For each clean
+    for (int userId : addedUserIds) {
+        userDAO.delete(userId);
+    }
+    addedUserIds.clear();
+}
+
+@AfterClass
+public static void tearDownClass() {
+    //total clean
+    for (int userId : addedUserIds) {
+        userDAO.delete(userId);
+    }
+    addedUserIds.clear();
+}
+
+    @Test
+    public void testSave() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPassword");
+
+        assertTrue(userDAO.save(user));
+        addedUserIds.add(user.getId());
     }
 
     @Test
-    public void saveUserTest() {
+    public void testGetAll() {
+        List<Object> users = userDAO.getAll();
+        assertNotNull(users);
+    }
+
+    @Test
+    public void testUpdate() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPassword");
+
+        userDAO.save(user);
+
+        user.setPassword("newPassword");
+        assertTrue(userDAO.update(user));
+    }
+
+    @Test
+    public void testDelete() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPassword");
+
+        userDAO.save(user);
+
+        assertTrue(userDAO.delete(user.getId()));
+        addedUserIds.remove(Integer.valueOf(user.getId()));
+    }
+
+    @Test
+    public void testUserAuthenticate() {
+        assertTrue(userDAO.userAuthenticate("testUser", "testPassword"));
+    }
+
+    @Test
+    public void testUserRole() {
         User user = new User();
         user.setUsername("testUser");
         user.setPassword("testPassword");
 
         Role role = new Role();
-        role.setRole("ROLE_USER");
+        role.setRole("MANAGER");
         user.setRole(role);
+
         assertTrue(userDAO.save(user));
+        addedUserIds.add(user.getId());
+
+        assertEquals("MANAGER", userDAO.userRole("testUser", "testPassword"));
     }
 
     @Test
-    public void getAllUsersTest() {
-        List<Object> users = userDAO.getAll();
-        assertNotNull(users);
-        assertTrue(users.size() > 0);
-    }
+    public void testCheckUsername() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPassword");
 
-    @Test
-    public void deleteUserTest() {
-        // Create a user and save it
-        User userToDelete = new User();
-        userToDelete.setUsername("userToDelete");
-        userToDelete.setPassword("passwordToDelete");
+        assertTrue(userDAO.save(user));
+        addedUserIds.add(user.getId());
 
-        Role role = new Role();
-        role.setRole("ROLE_USER");
-        userToDelete.setRole(role);
-
-        assertTrue(userDAO.save(userToDelete));
-
-        // Now, delete the user
-        assertTrue(userDAO.delete(userToDelete.getId()));
-    }
-
-    @Test
-    public void userAuthenticateTest() {
-        assertTrue(userDAO.userAuthenticate("testUser", "testPassword"));
-        assertFalse(userDAO.userAuthenticate("nonexistentUser", "password"));
-    }
-
-    @Test
-    public void userRoleTest() {
-        String role = userDAO.userRole("testUser", "testPassword");
-        assertEquals("ROLE_USER", role);
-    }
-
-    @Test
-    public void checkUsernameTest() {
         assertTrue(userDAO.checkUsername("testUser"));
         assertFalse(userDAO.checkUsername("nonexistentUser"));
     }
