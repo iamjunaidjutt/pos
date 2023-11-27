@@ -33,26 +33,26 @@ public class MenuBarGUI extends JMenuBar implements ActionListener {
         exitItem.addActionListener(this);
 
         // Add a second menu as Item
-        JMenu itemMenu = new JMenu("Item");
-        itemMenu.setMnemonic('I');
+        JMenu itemMenu = new JMenu("Catalog");
+        itemMenu.setMnemonic('C');
 
-        // Create menu items for Item menu
-        JMenuItem newItem = new JMenuItem("New Item");
-        JMenuItem deleteItem = new JMenuItem("Delete Item");
-        JMenuItem updateItem = new JMenuItem("Update Item");
-        JMenuItem listItems = new JMenuItem("List Items");
+        // Create menu Products for Item menu
+        JMenuItem newProduct = new JMenuItem("New Product");
+        JMenuItem deleteProduct = new JMenuItem("Delete Product");
+        JMenuItem updateProduct = new JMenuItem("Edit Product");
+        JMenuItem ListProducts = new JMenuItem("List All Products");
 
-        // Add menu items in Item menu
-        itemMenu.add(newItem);
-        itemMenu.add(deleteItem);
-        itemMenu.add(updateItem);
-        itemMenu.add(listItems);
+        // Add menu Products in Item menu
+        itemMenu.add(newProduct);
+        itemMenu.add(deleteProduct);
+        itemMenu.add(updateProduct);
+        itemMenu.add(ListProducts);
 
-        // Add action listeners to menu items in Item menu
-        newItem.addActionListener(this);
-        deleteItem.addActionListener(this);
-        updateItem.addActionListener(this);
-        listItems.addActionListener(this);
+        // Add action listeners to menu Products in Item menu
+        newProduct.addActionListener(this);
+        deleteProduct.addActionListener(this);
+        updateProduct.addActionListener(this);
+        ListProducts.addActionListener(this);
 
         // Add third menu as Inventory
         JMenu inventoryMenu = new JMenu("Inventory");
