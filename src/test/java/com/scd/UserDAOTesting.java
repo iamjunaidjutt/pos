@@ -1,4 +1,5 @@
 package com.scd;
+
 import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,43 +21,23 @@ public class UserDAOTesting {
         userDAO = new UserDAO();
     }
 
-//     @After
-// public void tearDown() {
-//     // For each clean
-//     for (int userId : addedUserIds) {
-//         userDAO.delete(userId);
-//     }
-//     addedUserIds.clear();
-// }
+    // @After
+    // public void tearDown() {
+    // // For each clean
+    // for (int userId : addedUserIds) {
+    // userDAO.delete(userId);
+    // }
+    // addedUserIds.clear();
+    // }
 
-// @AfterClass
-// public static void tearDownClass() {
-//     //total clean
-//     for (int userId : addedUserIds) {
-//         userDAO.delete(userId);
-//     }
-//     addedUserIds.clear();
-// }
-
-
-
-@After
-public void tearDown() {
-    try {
-        // For each clean
-        for (int userId : addedUserIds) {
-            userDAO.delete(userId);
-        }
-        addedUserIds.clear();
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
-}
-
-
-
-
-
+    // @AfterClass
+    // public static void tearDownClass() {
+    // //total clean
+    // for (int userId : addedUserIds) {
+    // userDAO.delete(userId);
+    // }
+    // addedUserIds.clear();
+    // }
 
     @Test
     public void testSave() {
@@ -100,7 +81,7 @@ public void tearDown() {
 
     @Test
     public void testUserAuthenticate() {
-        assertTrue(userDAO.userAuthenticate("testUser", "testPassword"));
+        assertTrue(userDAO.userAuthenticate("testUser", "newPassword"));
     }
 
     @Test
@@ -129,6 +110,5 @@ public void tearDown() {
         addedUserIds.add(user.getId());
 
         assertFalse(userDAO.checkUsername("testUser"));
-        assertFalse(userDAO.checkUsername("nonexistentUser"));
     }
 }

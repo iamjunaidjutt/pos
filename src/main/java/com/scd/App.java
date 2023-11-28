@@ -1,6 +1,13 @@
 package com.scd;
 
+import com.scd.Data.UserDAO;
 import com.scd.GUI.HomeGUI;
+import com.scd.Models.User;
+
+/**
+ * POS-Pharmacy
+ *
+ */
 
 /**
  * POS-Pharmacy
