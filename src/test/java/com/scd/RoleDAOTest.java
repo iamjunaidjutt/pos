@@ -33,10 +33,12 @@ public class RoleDAOTest {
     @Test
     public void testSave() {
         Role role = new Role();
-        role.setRole("testRole");
+        role.setRole("MANAGER");
 
         assertTrue(roleDAO.save(role));
         addedRoleIds.add(role.getId());
+
+        roleDAO.delete(role.getId());
     }
 
     @Test
@@ -48,21 +50,25 @@ public class RoleDAOTest {
     @Test
     public void testUpdate() {
         Role role = new Role();
-        role.setRole("testRole");
+        role.setRole("MANAGER");
         roleDAO.save(role);
 
-        role.setRole("newTestRole");
+        role.setRole("SALES_ASSISSTANT");
         assertTrue(roleDAO.update(role));
+
+        roleDAO.delete(role.getId());
     }
 
     @Test
     public void testDelete() {
         Role role = new Role();
-        role.setRole("testRole");
+        role.setRole("MANAGER");
         roleDAO.save(role);
 
         assertTrue(roleDAO.delete(role.getId()));
         addedRoleIds.remove(Integer.valueOf(role.getId()));
+
+        roleDAO.delete(role.getId());
     }
 }
 

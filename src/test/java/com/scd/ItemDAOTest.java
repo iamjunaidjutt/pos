@@ -13,10 +13,12 @@ import com.scd.Models.Product;
 public class ItemDAOTest {
 
     private static ItemDAO itemDAO;
+    private static ProductDAO productDAO;
 
     @BeforeClass
     public static void setUp() {
         itemDAO = new ItemDAO();
+        productDAO = new ProductDAO();
     }
 
     @AfterClass
@@ -31,19 +33,21 @@ public class ItemDAOTest {
     public void testSave() {
         Item item = new Item();
         Product product = new Product();
-        
-        product.setName("TestProduct tp");
-        product.setDescription("Product description tp");
-        product.setPrice(10);
+        product.setName("TestProduct tp1");
+        product.setDescription("Product description tp1");
+        product.setPrice(150);
         product.setStockQuantity(5);
 
-        assertTrue(new ProductDAO().save(product));
+        assertTrue(productDAO.save(product));
 
         item.setProduct(product);
         item.setPrice(150);
         item.setQuantityOrdered(4);
 
         assertTrue(itemDAO.save(item));
+
+        productDAO.delete(product.getCode());
+        itemDAO.delete(item.getCode());
     }
 
     @Test
@@ -56,13 +60,12 @@ public class ItemDAOTest {
     public void testUpdate() {
         Item item = new Item();
         Product product = new Product();
-
-        product.setName("TestProduct01");
-        product.setDescription("Product description pr01");
+        product.setName("TestProduct tp2");
+        product.setDescription("Product description tp2");
         product.setPrice(70);
         product.setStockQuantity(15);
 
-        assertTrue(new ProductDAO().save(product));
+        assertTrue(productDAO.save(product));
 
         item.setProduct(product);
         item.setPrice(50);
@@ -71,19 +74,21 @@ public class ItemDAOTest {
 
         item.setPrice(100);
         assertTrue(itemDAO.update(item));
+
+        productDAO.delete(product.getCode());
+        itemDAO.delete(item.getCode());
     }
 
     @Test
     public void testDelete() {
         Item item = new Item();
         Product product = new Product();
-
-        product.setName("TestProduct0");
-        product.setDescription("Product description test random");
+        product.setName("TestProduct tp3");
+        product.setDescription("Product description tp3");
         product.setPrice(50);
         product.setStockQuantity(10);
 
-        assertTrue(new ProductDAO().save(product));
+        assertTrue(productDAO.save(product));
 
         item.setProduct(product);
         item.setPrice(80);
@@ -92,19 +97,21 @@ public class ItemDAOTest {
         itemDAO.save(item);
 
         assertTrue(itemDAO.delete(item.getCode()));
+
+        productDAO.delete(product.getCode());
+        itemDAO.delete(item.getCode());
     }
 
     @Test
     public void testGetById() {
         Item item = new Item();
         Product product = new Product();
-
-        product.setName("TestProduct1");
-        product.setDescription("Product description test1");
+        product.setName("TestProduct tp4");
+        product.setDescription("Product description tp4");
         product.setPrice(40);
         product.setStockQuantity(10);
 
-        assertTrue(new ProductDAO().save(product));
+        assertTrue(productDAO.save(product));
 
         item.setProduct(product);
         item.setPrice(90);
@@ -115,20 +122,24 @@ public class ItemDAOTest {
         Item retrievedItem = itemDAO.getById(item.getCode());
         assertNotNull(retrievedItem);
         assertEquals(item.getCode(), retrievedItem.getCode());
+
+        productDAO.delete(product.getCode());
+        itemDAO.delete(item.getCode());
     }
 
     @Test
     public void testSaveItemWithProduct() {
         Item item = new Item();
         Product product = new Product();
-
-        product.setName("TestProduct2");
-        product.setDescription("Product test description");
+        product.setName("TestProduct tp5");
+        product.setDescription("Product description tp5");
         product.setPrice(500);
         product.setStockQuantity(10);
 
-        assertTrue(new ProductDAO().save(product));
+        assertTrue(productDAO.save(product));
         assertTrue(itemDAO.saveItemWithProduct(item, product));
+
+        productDAO.delete(product.getCode());
+        itemDAO.delete(item.getCode());
     }
 }
-

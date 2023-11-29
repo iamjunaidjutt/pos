@@ -54,6 +54,7 @@ public class CategoryDAOTest {
         assertTrue(categoryDAO.save(category));
         addedCategoryCodes.add(category.getCode());
         
+        categoryDAO.delete(category.getCode());
     }
 
     @Test
@@ -71,6 +72,8 @@ public class CategoryDAOTest {
 
         category.setName("Updated Category");
         assertTrue(categoryDAO.update(category));
+
+        categoryDAO.delete(category.getCode());
     }
 
     // @Test
@@ -93,6 +96,8 @@ public class CategoryDAOTest {
         Category retrievedCategory = categoryDAO.getById(category.getCode());
         assertNotNull(retrievedCategory);
         assertEquals("Test Category", retrievedCategory.getName());
+
+        categoryDAO.delete(category.getCode());
     }
 }
 
