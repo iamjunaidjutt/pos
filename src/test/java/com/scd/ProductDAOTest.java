@@ -37,6 +37,7 @@ public class ProductDAOTest {
 
         assertTrue(productDAO.save(product));
         addedProductCodes.add(product.getCode());
+        productDAO.delete(product.getCode());
     }
 
     @Test
@@ -45,29 +46,31 @@ public class ProductDAOTest {
         assertNotNull(products);
     }
 
-    // @Test
-    // public void testUpdate() {
-    //     Product product = new Product();
-    //     product.setName("Test Product");
-    //     product.setPrice(150.0);
+    @Test
+    public void testUpdate() {
+        Product product = new Product();
+        product.setName("Test Product");
+        product.setPrice(150.0);
 
-    //     productDAO.save(product);
+        productDAO.save(product);
 
-    //     product.setPrice(250.0);
-    //     assertTrue(productDAO.update(product));
-    // }
+        product.setPrice(250.0);
+        assertTrue(productDAO.update(product));
 
-    // @Test
-    // public void testDelete() {
-    //     Product product = new Product();
-    //     product.setName("Test Product");
-    //     product.setPrice(150);
+        productDAO.delete(product.getCode());
+    }
 
-    //     productDAO.save(product);
+    @Test
+    public void testDelete() {
+        Product product = new Product();
+        product.setName("Test Product");
+        product.setPrice(150);
 
-    //     assertTrue(productDAO.delete(product.getCode()));
-    //     addedProductCodes.remove(Integer.valueOf(product.getCode()));
-    // }
+        productDAO.save(product);
+
+        assertTrue(productDAO.delete(product.getCode()));
+        addedProductCodes.remove(Integer.valueOf(product.getCode()));
+    }
 
     @Test
     public void testGetById() {
@@ -82,6 +85,8 @@ public class ProductDAOTest {
         assertNotNull(retrievedProduct);
 
         assertEquals("Test Product", retrievedProduct.getName());
+
+        productDAO.delete(product.getCode());    
     }
 }
 

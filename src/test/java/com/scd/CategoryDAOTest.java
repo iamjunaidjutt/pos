@@ -23,15 +23,29 @@ public class CategoryDAOTest {
         addedCategoryCodes = new ArrayList<>();
     }
 
-    @After
-    public void tearDown() {
-        // to clean after  each
-        for (int categoryCode : addedCategoryCodes) {
-            categoryDAO.delete(categoryCode);
-        }
-        addedCategoryCodes.clear();
-    }
+    // @After
+    // public void tearDown() {
+    //     // to clean after  each
+    //     for (int categoryCode : addedCategoryCodes) {
+    //         categoryDAO.delete(categoryCode);
+    //     }
+    //     addedCategoryCodes.clear();
+    // }
 
+//     @After
+// public void tearDown() {
+//     // To clean up after each test
+//     for (int categoryCode : addedCategoryCodes) {
+//         Category category = categoryDAO.getById(categoryCode);
+//         if (category != null) {
+//             categoryDAO.delete(category.getCode());
+//         }
+//     }
+//     addedCategoryCodes.clear();
+// }
+
+
+    
     @Test
     public void testSave() {
         Category category = new Category();
@@ -39,6 +53,7 @@ public class CategoryDAOTest {
 
         assertTrue(categoryDAO.save(category));
         addedCategoryCodes.add(category.getCode());
+        
     }
 
     @Test
