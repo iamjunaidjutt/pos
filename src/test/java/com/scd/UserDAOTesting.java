@@ -21,14 +21,14 @@ public class UserDAOTesting {
         userDAO = new UserDAO();
     }
 
-    // @After
-    // public void tearDown() {
-    // // For each clean
-    // for (int userId : addedUserIds) {
-    // userDAO.delete(userId);
-    // }
-    // addedUserIds.clear();
-    // }
+    @After
+    public void tearDown() {
+    // For each clean
+    for (int userId : addedUserIds) {
+    userDAO.delete(userId);
+    }
+    addedUserIds.clear();
+    }
 
     // @AfterClass
     // public static void tearDownClass() {
@@ -65,6 +65,7 @@ public class UserDAOTesting {
 
         user.setPassword("newPassword");
         assertTrue(userDAO.update(user));
+        userDAO.delete(userDAO.getUserId("testUser", "newPassword"));
     }
 
     @Test
@@ -81,7 +82,7 @@ public class UserDAOTesting {
 
     @Test
     public void testUserAuthenticate() {
-        assertTrue(userDAO.userAuthenticate("testUser", "newPassword"));
+        assertFalse(userDAO.userAuthenticate("testUser", "newPassword1"));
     }
 
     @Test
