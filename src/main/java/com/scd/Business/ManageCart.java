@@ -156,8 +156,8 @@ public class ManageCart {
     // public static void main(String[] args) {
     // ManageCart manageCart = new ManageCart();
 
-    // // manageCart.addItemToCart(122, 1);
-    // // manageCart.addItemToCart(123, 2);
+    // manageCart.addItemToCart(122, 1);
+    // manageCart.addItemToCart(123, 2);
 
     // // manageCart.removeItemFromCart(169);
 
@@ -170,13 +170,14 @@ public class ManageCart {
     // // System.out.println(cart);
     // // }
 
-    // // manageCart.placeOrder("John Doe");
+    // manageCart.placeOrder("John Doe");
 
     // // manageCart.cancelOrder(219);
 
     // List<Orders> orders = manageCart.getOrders();
     // for (Orders order : orders) {
     // System.out.println(order);
+    // GenerateInvoice generateInvoice = new GenerateInvoice(order);
     // }
 
     // }

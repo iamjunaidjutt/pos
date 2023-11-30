@@ -93,4 +93,8 @@ public class Item {
         this.order = order;
     }
 
+    public char[] getSubtotal() {
+        return null;
+    }
+
 }
