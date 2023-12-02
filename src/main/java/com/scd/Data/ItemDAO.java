@@ -53,6 +53,29 @@ public class ItemDAO implements DAO {
         }
     }
 
+    public List<Item> getAllCartItems() {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        List<Item> items = null;
+
+        try {
+            transaction.begin();
+            items = entityManager.createQuery("FROM Item WHERE cart IS NOT NULL", Item.class).getResultList();
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null && transaction.isActive()) {
+                transaction.rollback();
+            }
+            e.printStackTrace(); // You may log the exception or handle it based on your requirements
+        } finally {
+            if (entityManager != null && entityManager.isOpen()) {
+                entityManager.close();
+            }
+        }
+
+        return items;
+    }
+
     @Override
     public boolean update(Object obj) {
         Item item = (Item) obj;

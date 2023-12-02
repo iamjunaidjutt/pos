@@ -22,9 +22,9 @@ public class ManageCatalog {
         return categoryDAO.save(category);
     }
 
-    public boolean addSubCategory(Category category, Category subCategory) {
+    public boolean addSubCategory(int parentId, Category subCategory) {
         CategoryDAO categoryDAO = new CategoryDAO();
-        return categoryDAO.addSubCategory(category, subCategory);
+        return categoryDAO.addSubCategory(parentId, subCategory);
     }
 
     public List<Category> getAllCategories() {
@@ -40,7 +40,8 @@ public class ManageCatalog {
 
     public List<Category> getAllSubCategories(Category category) {
         CategoryDAO categoryDAO = new CategoryDAO();
-        List<Category> subCategories = categoryDAO.getSubCategories(category);
+        List<Category> subCategories = new ArrayList<>();
+        subCategories = categoryDAO.getSubCategories(category);
         return subCategories;
     }
 
@@ -48,6 +49,13 @@ public class ManageCatalog {
         CategoryDAO categoryDAO = new CategoryDAO();
         Category category = new Category();
         category = categoryDAO.getById(id);
+        return category;
+    }
+
+    public Category getCategoryByName(String name) {
+        CategoryDAO categoryDAO = new CategoryDAO();
+        Category category = new Category();
+        category = categoryDAO.getByName(name);
         return category;
     }
 
@@ -101,50 +109,74 @@ public class ManageCatalog {
         return product;
     }
 
+    public Product getProductByName(String name) {
+        ProductDAO productDAO = new ProductDAO();
+        Product product = new Product();
+        product = productDAO.getByName(name);
+        return product;
+    }
+
+    public List<Product> getProductsByCategory(int category) {
+        ProductDAO productDAO = new ProductDAO();
+        List<Product> products = new ArrayList<>();
+        products = productDAO.getProductsByCategory(category);
+        return products;
+    }
+
     // public static void main(String[] args) {
     // ManageCatalog manageCatalog = new ManageCatalog();
-    // // Category category = new Category();
-    // // category.setName("Category 1");
-    // // category.setDescription("Category 1 description");
-    // // // manageCatalog.addCategory(category.getName(),
-    // category.getDescription());
-    // // Category category2 = new Category();
-    // // category2.setName("Category 2");
-    // // category2.setDescription("Category 2 description");
-    // // // manageCatalog.addCategory(category2.getName(),
-    // // Category category3 = new Category();
-    // // category3.setName("Category 3");
-    // // category3.setDescription("Category 3 description");
-    // // // manageCatalog.addCategory(category3.getName(),
-    // // Category category4 = new Category();
-    // // category4.setName("Category 4");
-    // // category4.setDescription("Category 4 description");
-    // // // manageCatalog.addCategory(category4.getName(),
+    // Category category = new Category();
+    // category.setName("Category 1");
+    // category.setDescription("Category 1 description");
+    // manageCatalog.addCategory(category.getName(), category.getDescription());
 
-    // // List<Category> categories = manageCatalog.getAllCategories();
+    // Category category2 = new Category();
+    // category2.setName("Category 2");
+    // category2.setDescription("Category 2 description");
+    // manageCatalog.addCategory(category2.getName(), category2.getDescription());
 
-    // // for (Category category : categories) {
-    // // System.out.println(category.getName());
-    // // List<Category> subCategories =
-    // manageCatalog.getAllSubCategories(category);
-    // // for (Category subCategory : subCategories) {
-    // // System.out.println(subCategory.getName());
-    // // }
-    // // }
+    // Category category3 = new Category();
+    // category3.setName("Category 3");
+    // category3.setDescription("Category 3 description");
+    // manageCatalog.addCategory(category3.getName(), category3.getDescription());
 
-    // // manageCatalog.addProduct("Product 1", "Product 1 description", 10.0, 10,
-    // // LocalDateTime.now(), categories);
-    // // manageCatalog.addProduct("Product 2", "Product 2 description", 20.0, 20,
-    // // LocalDateTime.now(), categories);
-    // // manageCatalog.addProduct("Product 3", "Product 3 description", 30.0, 30,
-    // // LocalDateTime.now(), categories);
-    // // manageCatalog.addProduct("Product 4", "Product 4 description", 40.0, 40,
-    // // LocalDateTime.now(), categories);
+    // Category category4 = new Category();
+    // category4.setName("Category 4");
+    // category4.setDescription("Category 4 description");
+    // manageCatalog.addCategory(category4.getName(), category4.getDescription());
 
-    // // List<Product> products = manageCatalog.getAllProducts();
-    // // for (Product product : products) {
-    // // System.out.println(product.getName());
-    // // }
+    // List<Category> categories = manageCatalog.getAllCategories();
+
+    // for (Category category5 : categories) {
+    // System.out.println(category5.getName());
+    // List<Category> subCategories = manageCatalog.getAllSubCategories(category5);
+    // for (Category subCategory : subCategories) {
+    // System.out.println(subCategory.getName());
+    // }
+    // }
+
+    // Category subCategory = new Category();
+    // subCategory.setName("Subcategory 4");
+    // subCategory.setDescription("Subcategory 4 description");
+
+    // manageCatalog.addSubCategory(3, subCategory);
+
+    // List<Category> categories = new ArrayList<>();
+    // categories.add(manageCatalog.getCategory(1));
+
+    // manageCatalog.addProduct("Product 1", "Product 1 description", 10.0, 10,
+    // LocalDateTime.now(), categories);
+    // manageCatalog.addProduct("Product 2", "Product 2 description", 20.0, 20,
+    // LocalDateTime.now(), categories);
+    // manageCatalog.addProduct("Product 3", "Product 3 description", 30.0, 30,
+    // LocalDateTime.now(), categories);
+    // manageCatalog.addProduct("Product 5", "Product 5 description", 35.6, 40,
+    // LocalDateTime.now(), categories);
+
+    // List<Product> products = manageCatalog.getAllProducts();
+    // for (Product product : products) {
+    // System.out.println(product.getName());
+    // }
 
     // // Category suCategory = new Category();
     // // suCategory.setName("Subcategory 1");
@@ -174,5 +206,4 @@ public class ManageCatalog {
     // // manageCatalog.deleteSubCategory(category, subCategories.get(0));
 
     // }
-
 }

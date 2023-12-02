@@ -111,4 +111,42 @@ public class ProductDAO implements DAO {
         }
     }
 
+    public Product getByName(String name) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Product product = entityManager.createQuery("from Product where name = :name", Product.class)
+                    .setParameter("name", name).getSingleResult();
+            transaction.commit();
+            return product;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public List<Product> getProductsByCategory(int id) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            List<Product> products = entityManager.createQuery("from Product where category_id = :id", Product.class)
+                    .setParameter("id", id).getResultList();
+            transaction.commit();
+            return products;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
 }

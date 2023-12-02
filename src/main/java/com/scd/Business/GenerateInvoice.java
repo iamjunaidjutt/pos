@@ -25,6 +25,9 @@ public class GenerateInvoice {
 
     public GenerateInvoice(Orders order) {
         this.order = order;
+    }
+
+    public boolean generate() {
         System.out.println("Invoice generated");
         hm.put("id", order.getId());
         hm.put("cname", order.getCustomer().getName());
@@ -68,11 +71,11 @@ public class GenerateInvoice {
             System.out.println("exporting the JASPER file to PDF file....");
             JasperExportManager.exportReportToPdfFile(jprint, fileNamePdf);
             System.out.println("Successfully completed the export");
-
+            return true;
         } catch (Exception e) {
             System.out.print("Exception:" + e);
+            return false;
         }
-
     }
 
 }

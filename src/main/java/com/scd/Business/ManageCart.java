@@ -47,12 +47,27 @@ public class ManageCart {
         return itemDAO.delete(id);
     }
 
+    public List<Item> getCartItems() {
+        ItemDAO itemDAO = new ItemDAO();
+        List<Item> items = itemDAO.getAllCartItems();
+        return items;
+    }
+
     public boolean updateItemQuantity(int id, int quantityOrdered) {
         ItemDAO itemDAO = new ItemDAO();
         Item item = itemDAO.getById(id);
         item.setQuantityOrdered(quantityOrdered);
         item.setPrice(item.getProduct().getPrice() * quantityOrdered);
         return itemDAO.update(item);
+    }
+
+    public double getCartTotal() {
+        List<Item> items = getCartItems();
+        double total = 0;
+        for (Item item : items) {
+            total += item.getPrice();
+        }
+        return total;
     }
 
     public List<Cart> getCartDetails() {

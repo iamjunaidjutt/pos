@@ -55,12 +55,32 @@ public class CategoryDAO implements DAO {
         }
     }
 
+
     public Category getById(int id) {
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
             Category category = entityManager.find(Category.class, id);
+            transaction.commit();
+            return category;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public Category getByName(String name) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            Category category = entityManager.createQuery("from Category where name = :name", Category.class)
+                    .setParameter("name", name).getSingleResult();
             transaction.commit();
             return category;
         } catch (Exception e) {
@@ -113,23 +133,53 @@ public class CategoryDAO implements DAO {
         }
     }
 
-    public boolean addSubCategory(Category category, Category subCategory) {
+    // public boolean addSubCategory(Category category, Category subCategory) {
+    // EntityManager entityManager = getEntityManager();
+    // EntityTransaction transaction = entityManager.getTransaction();
+    // try {
+    // transaction.begin();
+    // Category category2 = entityManager.find(Category.class, category.getCode());
+    // try {
+    // entityManager.persist(subCategory);
+    // } catch (PersistenceException e) {
+    // e.printStackTrace();
+    // entityManager.merge(subCategory);
+    // category2.getSubcategories().add(subCategory);
+    // }
+    // category2.getSubcategories().add(subCategory);
+    // entityManager.merge(category2);
+    // transaction.commit();
+    // return true;
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // if (transaction.isActive() && transaction != null)
+    // transaction.rollback();
+    // return false;
+    // } finally {
+    // entityManager.close();
+    // }
+    // }
+
+    public boolean addSubCategory(int parent_category_id, Category subCategory) {
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            Category category2 = entityManager.find(Category.class, category.getCode());
+            Category category2 = entityManager.find(Category.class, parent_category_id);
             try {
                 entityManager.persist(subCategory);
+                category2.getSubcategories().add(subCategory);
+                System.out.println("Category: " + category2);
+                for (Category category : category2.getSubcategories()) {
+                    System.out.println("Subcategory: " + category);
+                }
+                entityManager.merge(category2);
+                transaction.commit();
+                return true;
             } catch (PersistenceException e) {
                 e.printStackTrace();
-                entityManager.merge(subCategory);
-                category2.getSubcategories().add(subCategory);
+                return false;
             }
-            category2.getSubcategories().add(subCategory);
-            entityManager.merge(category2);
-            transaction.commit();
-            return true;
         } catch (Exception e) {
             e.printStackTrace();
             if (transaction.isActive() && transaction != null)
