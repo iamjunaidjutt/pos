@@ -31,7 +31,7 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.util.List;
 
-public class ListAllProducts extends JFrame {
+public class ListAllProductsGUI extends JFrame {
     private JLabel titleLabel;
 
     private JTextField searchField;
@@ -67,7 +67,7 @@ public class ListAllProducts extends JFrame {
         return root;
     }
 
-    public ListAllProducts() {
+    public ListAllProductsGUI() {
         super("List All Products");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -277,11 +277,6 @@ public class ListAllProducts extends JFrame {
                         String.valueOf(product.getStockQuantity()), "+" });
             }
         }
-    }
-
-    public static void main(String[] args) {
-        ListAllProducts listAllProducts = new ListAllProducts();
-        listAllProducts.setVisible(true);
     }
 
 }
