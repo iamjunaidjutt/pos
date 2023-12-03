@@ -1,70 +1,72 @@
 package com.scd.GUI;
 
 import javax.swing.BoxLayout;
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
+import javax.swing.SpinnerDateModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
-import com.scd.Business.ManageCart;
 import com.scd.Business.ManageCatalog;
 import com.scd.Models.Category;
 import com.scd.Models.Product;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class AddProductGUI extends JFrame {
-    private JLabel titleLabel;
-
-    private JTextField searchField;
-
-    private JPanel panel1;
-    private JPanel panel2;
+public class AddProductGUI extends JFrame implements ActionListener {
+    private JPanel formPanel;
 
     private JTable table;
 
     private DefaultTableModel tableModel;
 
-    private JTree categoryTree;
-
     private JScrollPane scrollPane;
-
-    private List<Category> categories;
 
     private List<Product> products;
 
     private ManageCatalog manageCatalog;
 
-    private DefaultMutableTreeNode addNodes(DefaultMutableTreeNode root, List<Category> categories) {
-        for (Category category : categories) {
-            DefaultMutableTreeNode node = new DefaultMutableTreeNode(category.getName());
-            root.add(node);
-            System.out.println("Category: " + category.getName());
-            List<Category> subCategories = manageCatalog.getAllSubCategories(category);
-            System.out.println("Subcategories: " + subCategories.size());
-            if (subCategories.size() > 0) {
-                addNodes(node, subCategories);
-            }
-        }
-        return root;
+    private JLabel pNameLabel, pDescriptionLabel, pPriceLabel, pStockQuantityLabel, pExpirationDateLabel,
+            pCategoriesLabel;
+    private JTextField pNameField, pDescriptionField, pPriceField, pStockQuantityField;
+
+    private JSpinner dateSpinner;
+
+    private JComboBox<String> categoriesComboBox;
+    private List<String> selectedCategories;
+
+    private JList<String> categoriesList;
+    private DefaultListModel<String> categoriesListModel;
+    private JScrollPane categoriesScrollPane;
+
+    private JButton removeButton;
+    private JButton addButton;
+    private JButton createButton;
+    private JButton updateButton;
+
+    private LocalDateTime convertToLocalDateTime(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
     public AddProductGUI() {
@@ -76,125 +78,16 @@ public class AddProductGUI extends JFrame {
 
         // Initialize ManageCatalog
         manageCatalog = new ManageCatalog();
+        selectedCategories = new ArrayList<>();
 
         // Menu Bar
         MenuBarGUI menuBarGUI = new MenuBarGUI(this);
         setJMenuBar(menuBarGUI);
 
-        // Title
-        titleLabel = new JLabel("Search for a product");
-        // titleLabel.setBounds(20, 20, 200, 30);
-
-        // Search Field
-        searchField = new JTextField(20);
-        searchField.setPreferredSize(new Dimension(200, 30));
-        // searchField.setBounds(20, 50, 200, 30);
-
         // Panels
-        panel1 = new JPanel();
-        panel1.setLayout(new FlowLayout());
-        panel1.setPreferredSize(new Dimension(1200, 50));
 
-        panel2 = new JPanel();
-        panel2.setPreferredSize(new Dimension(1200, 750));
-        panel2.setLayout(new GridLayout(1, 2));
-
-        panel1.add(titleLabel);
-        panel1.add(searchField);
-
-        categoryTree = displayCategoryTree();
-
-        categoryTree.addTreeSelectionListener(new TreeSelectionListener() {
-            @Override
-            public void valueChanged(TreeSelectionEvent e) {
-                TreePath selectedPath = categoryTree.getSelectionPath();
-                if (selectedPath != null) {
-                    Object selectedNode = selectedPath.getLastPathComponent();
-                    System.out.println("Selected Node: " + selectedNode);
-                    if (selectedNode.toString().equals("Categories")) {
-                        System.out.println("No category selected");
-                    } else {
-                        Category category = manageCatalog.getCategoryByName(selectedNode.toString());
-                        System.out.println("Category: " + category.getName());
-                        updateProducts(category);
-                    }
-                }
-            }
-        });
-
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                displayProducts();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                displayProducts();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                // Plain text components do not fire these events
-            }
-        });
-
-        panel2.add(categoryTree);
-        panel2.add(displayProducts(null));
-
-        add(panel1);
-        add(panel2);
-
-        setVisible(true);
-    }
-
-    public JTree displayCategoryTree() {
-        categories = manageCatalog.getAllCategories();
-
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Categories");
-        root = addNodes(root, categories);
-
-        JTree tree = new JTree(root);
-
-        return tree;
-    }
-
-    public JScrollPane displayProducts(Category category) {
-        if (category == null) {
-            products = manageCatalog.getAllProducts();
-        } else {
-            products = category.getProducts();
-        }
-        System.out.println("Products: " + products.size());
-
-        tableModel = new DefaultTableModel();
-        tableModel.setColumnIdentifiers(
-                new String[] { "Product Name", "Product Description", "Product Price", "Stock Available", "Actions" });
-        for (Product product : products) {
-            tableModel.addRow(
-                    new Object[] { product.getName(), product.getDescription(),
-                            String.valueOf(product.getPrice()), String.valueOf(product.getStockQuantity()),
-                            "+" });
-        }
-
-        table = new JTable(tableModel);
-        table.setPreferredScrollableViewportSize(new Dimension(600, 750));
-        table.setFillsViewportHeight(true);
-        table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(100);
-
-        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-        table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-
-        scrollPane = new JScrollPane(table);
+        displayForm();
+        displayProducts();
 
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -202,59 +95,152 @@ public class AddProductGUI extends JFrame {
             public void valueChanged(ListSelectionEvent e) {
                 int selectedRow = table.getSelectedRow();
                 int selectedColumn = table.getSelectedColumn();
-                if (selectedRow != -1 && selectedColumn == 4) {
-                    try {
-                        String productName = table.getValueAt(selectedRow, 0).toString();
-                        Product product = manageCatalog.getProductByName(productName);
-                        System.out.println("Product: " + product.getName());
-                        String quantity = JOptionPane.showInputDialog("Enter quantity");
-                        int quantityInt = Integer.parseInt(quantity);
-                        if (quantityInt > product.getStockQuantity()) {
-                            JOptionPane.showMessageDialog(null, "Not enough stock available");
-                        } else {
-                            try {
-                                ManageCart manageCart = new ManageCart();
-                                manageCart.addItemToCart(product.getCode(), quantityInt);
-                                JOptionPane.showMessageDialog(null, "Product added to cart");
-                            } catch (Exception exception) {
-                                System.out.println("Error: " + exception.getMessage());
-                                JOptionPane.showMessageDialog(null, "Error: " + exception.getMessage());
+
+                if (selectedRow != -1) {
+                    if (selectedColumn == 7) {
+                        try {
+                            int productCode = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+                            if (manageCatalog.deleteProduct(productCode)) {
+                                JOptionPane.showMessageDialog(null, "Product deleted successfully");
+                                updateProducts();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error deleting product");
                             }
+                        } catch (Exception exception) {
+                            System.out.println("Error: " + exception.getMessage());
                         }
-                    } catch (Exception exception) {
-                        System.out.println("Error: " + exception.getMessage());
+                    } else {
+                        pNameField.setText(table.getValueAt(selectedRow, 1).toString());
+                        pDescriptionField.setText(table.getValueAt(selectedRow, 2).toString());
+                        pPriceField.setText(table.getValueAt(selectedRow, 4).toString());
+                        pStockQuantityField.setText(table.getValueAt(selectedRow, 5).toString());
+                        dateSpinner.setValue(table.getValueAt(selectedRow, 6));
+                        List<Category> categories = manageCatalog.getCategoriesByProduct(
+                                Integer.parseInt(table.getValueAt(selectedRow, 0).toString()));
+                        selectedCategories = new ArrayList<>();
+                        for (Category category : categories) {
+                            selectedCategories.add(category.getName());
+                        }
+                        updateListModel();
                     }
-                } else {
-                    System.out.println("No product selected");
                 }
             }
         });
 
-        return scrollPane;
+        setVisible(true);
     }
 
-    public void updateProducts(Category category) {
-        products = category.getProducts();
-        System.out.println("Products: " + products.size());
+    private void updateListModel() {
+        categoriesListModel = new DefaultListModel<>();
+        for (String selectedCategory : selectedCategories) {
+            categoriesListModel.addElement(selectedCategory);
+        }
+
+        if (categoriesList != null) {
+            categoriesList.setModel(categoriesListModel);
+            categoriesList.repaint();
+        } else {
+            categoriesList = new JList<>(categoriesListModel);
+        }
+    }
+
+    public void displayForm() {
+        formPanel = new JPanel();
+        formPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        formPanel.setPreferredSize(new Dimension(1200, 150));
+
+        pNameLabel = new JLabel("Product Name");
+        pNameField = new JTextField(15);
+
+        pDescriptionLabel = new JLabel("Product Description");
+        pDescriptionField = new JTextField(15);
+
+        pPriceLabel = new JLabel("Product Price");
+        pPriceField = new JTextField(15);
+
+        pStockQuantityLabel = new JLabel("Stock Quantity");
+        pStockQuantityField = new JTextField(15);
+
+        pExpirationDateLabel = new JLabel("Expiration Date");
+        dateSpinner = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "dd.MM.yyyy");
+        dateSpinner.setEditor(dateEditor);
+
+        pCategoriesLabel = new JLabel("Categories");
+
+        List<Category> categories = manageCatalog.getAllCategories();
+
+        updateListModel();
+
+        String[] categoriesArray = new String[categories.size()];
+        for (int i = 0; i < categories.size(); i++) {
+            categoriesArray[i] = categories.get(i).getName();
+        }
+        categoriesComboBox = new JComboBox<>(categoriesArray);
+
+        categoriesScrollPane = new JScrollPane(categoriesList);
+        categoriesScrollPane.setPreferredSize(new Dimension(200, 100));
+
+        addButton = new JButton("+");
+        addButton.setFocusable(false);
+        addButton.addActionListener(this);
+
+        removeButton = new JButton("-");
+        removeButton.setFocusable(false);
+        removeButton.addActionListener(this);
+
+        createButton = new JButton("Create");
+        createButton.setFocusable(false);
+        createButton.addActionListener(this);
+
+        updateButton = new JButton("Update");
+        updateButton.setFocusable(false);
+        updateButton.addActionListener(this);
+
+        formPanel.add(pNameLabel);
+        formPanel.add(pNameField);
+        formPanel.add(pDescriptionLabel);
+        formPanel.add(pDescriptionField);
+        formPanel.add(pPriceLabel);
+        formPanel.add(pPriceField);
+        formPanel.add(pStockQuantityLabel);
+        formPanel.add(pStockQuantityField);
+        formPanel.add(pExpirationDateLabel);
+        formPanel.add(dateSpinner);
+        formPanel.add(pCategoriesLabel);
+        formPanel.add(categoriesScrollPane);
+        formPanel.add(removeButton);
+        formPanel.add(categoriesComboBox);
+        formPanel.add(addButton);
+        formPanel.add(createButton);
+        formPanel.add(updateButton);
+
+        add(formPanel);
+    }
+
+    public void displayProducts() {
+        products = manageCatalog.getAllProducts();
 
         tableModel = new DefaultTableModel();
         tableModel.setColumnIdentifiers(
-                new String[] { "Product Name", "Product Description", "Product Price", "Stock Available", "Actions" });
+                new String[] { "Product Code", "Product Name", "Product Description", "Category", "Product Price",
+                        "Stock Available",
+                        "Expiration Date", "Actions" });
         for (Product product : products) {
+            List<String> categories = new ArrayList<>();
+            for (Category category : product.getCategories()) {
+                categories.add(category.getName());
+            }
             tableModel.addRow(
-                    new Object[] { product.getName(), product.getDescription(),
-                            "$" + String.format("%.2f", product.getPrice()),
-                            String.valueOf(product.getStockQuantity()), "+" });
+                    new Object[] { product.getCode(), product.getName(), product.getDescription(), categories,
+                            String.valueOf(product.getPrice()), String.valueOf(product.getStockQuantity()),
+                            product.getExpirationDate(),
+                            "X" });
         }
 
         table = new JTable(tableModel);
-        table.setPreferredScrollableViewportSize(new Dimension(600, 750));
+        table.setPreferredScrollableViewportSize(new Dimension(1200, 700));
         table.setFillsViewportHeight(true);
-        table.getColumnModel().getColumn(0).setPreferredWidth(100);
-        table.getColumnModel().getColumn(1).setPreferredWidth(200);
-        table.getColumnModel().getColumn(2).setPreferredWidth(100);
-        table.getColumnModel().getColumn(3).setPreferredWidth(100);
-        table.getColumnModel().getColumn(4).setPreferredWidth(100);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -263,25 +249,158 @@ public class AddProductGUI extends JFrame {
         table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+
+        ListSelectionModel selectionModel = table.getSelectionModel();
+        selectionModel.addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                int selectedRow = table.getSelectedRow();
+                int selectedColumn = table.getSelectedColumn();
+
+                if (selectedRow != -1) {
+                    if (selectedColumn == 7) {
+                        try {
+                            int productCode = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+                            if (manageCatalog.deleteProduct(productCode)) {
+                                JOptionPane.showMessageDialog(null, "Product deleted successfully");
+                                updateProducts();
+                            } else {
+                                JOptionPane.showMessageDialog(null, "Error deleting product");
+                            }
+                            table.revalidate();
+                            table.repaint();
+                        } catch (Exception exception) {
+                            System.out.println("Error: " + exception.getMessage());
+                        }
+                    } else {
+                        pNameField.setText(table.getValueAt(selectedRow, 1).toString());
+                        pDescriptionField.setText(table.getValueAt(selectedRow, 2).toString());
+                        pPriceField.setText(table.getValueAt(selectedRow, 4).toString());
+                        pStockQuantityField.setText(table.getValueAt(selectedRow, 5).toString());
+                        dateSpinner.setValue(table.getValueAt(selectedRow, 6));
+                        List<Category> categories = manageCatalog.getCategoriesByProduct(
+                                Integer.parseInt(table.getValueAt(selectedRow, 0).toString()));
+                        selectedCategories = new ArrayList<>();
+                        for (Category category : categories) {
+                            selectedCategories.add(category.getName());
+                        }
+                        updateListModel();
+                    }
+                }
+            }
+
+        });
+
+        scrollPane = new JScrollPane(table);
+
+        add(scrollPane);
+    }
+
+    public void updateProducts() {
+        products = manageCatalog.getAllProducts();
+
+        tableModel = new DefaultTableModel();
+        tableModel.setColumnIdentifiers(
+                new String[] { "Product Code", "Product Name", "Product Description", "Category", "Product Price",
+                        "Stock Available",
+                        "Expiration Date", "Actions" });
+        for (Product product : products) {
+            List<String> categories = new ArrayList<>();
+            for (Category category : product.getCategories()) {
+                categories.add(category.getName());
+            }
+            tableModel.addRow(
+                    new Object[] { product.getCode(), product.getName(), product.getDescription(), categories,
+                            String.valueOf(product.getPrice()), String.valueOf(product.getStockQuantity()),
+                            product.getExpirationDate(),
+                            "X" });
+        }
+
+        table.setPreferredScrollableViewportSize(new Dimension(1200, 700));
+        table.setFillsViewportHeight(true);
+
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        table.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+        table.setModel(tableModel);
         scrollPane.setViewportView(table);
     }
 
-    public void displayProducts() {
-        String searchTerm = searchField.getText().toLowerCase();
-        tableModel.setRowCount(0);
-
-        for (Product product : products) {
-            if (product.getName().toLowerCase().contains(searchTerm)) {
-                tableModel.addRow(new Object[] { product.getName(), product.getDescription(),
-                        String.format("%.2f", product.getPrice()),
-                        String.valueOf(product.getStockQuantity()), "+" });
-            }
-        }
+    private void clearFields() {
+        pNameField.setText("");
+        pDescriptionField.setText("");
+        pPriceField.setText("");
+        pStockQuantityField.setText("");
+        dateSpinner.setValue(new Date());
+        selectedCategories = new ArrayList<>();
+        updateListModel();
     }
 
-    public static void main(String[] args) {
-        AddProductGUI addProductGUI = new AddProductGUI();
-        addProductGUI.setVisible(true);
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == addButton) {
+            System.out.println("Select category button clicked");
+            String selectedCategory = categoriesComboBox.getSelectedItem().toString();
+            selectedCategories.add(selectedCategory);
+            updateListModel();
+            System.out.println(selectedCategories);
+        } else if (e.getSource() == removeButton) {
+            System.out.println("Remove category button clicked");
+            String selectedCategory = categoriesComboBox.getSelectedItem().toString();
+            selectedCategories.remove(selectedCategory);
+            updateListModel();
+            System.out.println(selectedCategories);
+        } else if (e.getSource() == createButton) {
+            System.out.println("Create button clicked");
+            String productName = pNameField.getText();
+            String productDescription = pDescriptionField.getText();
+            double productPrice = Double.parseDouble(pPriceField.getText());
+            int productStockQuantity = Integer.parseInt(pStockQuantityField.getText());
+            List<Category> productCategories = new ArrayList<>();
+            for (String selectedCategory : selectedCategories) {
+                Category category = manageCatalog.getCategoryByName(selectedCategory);
+                productCategories.add(category);
+            }
+            if (manageCatalog.addProduct(productName, productDescription, productPrice, productStockQuantity,
+                    convertToLocalDateTime((Date) dateSpinner.getValue()),
+                    productCategories)) {
+                JOptionPane.showMessageDialog(null, "Product added successfully");
+                updateProducts();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error adding product");
+            }
+            clearFields();
+        } else if (e.getSource() == updateButton) {
+            System.out.println("Update button clicked");
+            int productCode = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
+            String productName = pNameField.getText();
+            String productDescription = pDescriptionField.getText();
+            double productPrice = Double.parseDouble(pPriceField.getText());
+            int productStockQuantity = Integer.parseInt(pStockQuantityField.getText());
+            List<Category> productCategories = new ArrayList<>();
+            for (String selectedCategory : selectedCategories) {
+                Category category = manageCatalog.getCategoryByName(selectedCategory);
+                productCategories.add(category);
+            }
+            if (manageCatalog.updateProduct(productCode, productName, productDescription, productPrice,
+                    productStockQuantity,
+                    convertToLocalDateTime((Date) dateSpinner.getValue()),
+                    productCategories)) {
+                JOptionPane.showMessageDialog(null, "Product updated successfully");
+                updateProducts();
+            } else {
+                JOptionPane.showMessageDialog(null, "Error updating product");
+            }
+            clearFields();
+        }
     }
 
 }

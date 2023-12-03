@@ -98,7 +98,7 @@ public class ManageCatalog {
         product.setExpirationDate(localDateTime);
         product.setCategories(new ArrayList<Category>());
         product.getCategories().addAll(categories);
-        return productDAO.update(product);
+        return productDAO.save(product);
     }
 
     public List<Product> getAllProducts() {
@@ -131,6 +131,34 @@ public class ManageCatalog {
         List<Product> products = new ArrayList<>();
         products = productDAO.getProductsByCategory(category);
         return products;
+    }
+
+    public List<Category> getCategoriesByProduct(int product) {
+        ProductDAO productDAO = new ProductDAO();
+        List<Category> categories = new ArrayList<>();
+        categories = productDAO.getCategoriesByProduct(product);
+        return categories;
+    }
+
+    public boolean updateProduct(int id, String name, String description, double price, int stockQuantity,
+            LocalDateTime localDateTime,
+            List<Category> categories) {
+        ProductDAO productDAO = new ProductDAO();
+        Product product = new Product();
+        product = productDAO.getById(id);
+        product.setName(name);
+        product.setDescription(description);
+        product.setPrice(price);
+        product.setStockQuantity(stockQuantity);
+        product.setExpirationDate(localDateTime);
+        product.setCategories(new ArrayList<Category>());
+        product.getCategories().addAll(categories);
+        return productDAO.update(product);
+    }
+
+    public boolean deleteProduct(int id) {
+        ProductDAO productDAO = new ProductDAO();
+        return productDAO.delete(id);
     }
 
     public static void main(String[] args) {
