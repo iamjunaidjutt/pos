@@ -25,6 +25,7 @@ import com.scd.Business.ManageCart;
 import com.scd.Business.ManageCatalog;
 import com.scd.Models.Category;
 import com.scd.Models.Product;
+import com.scd.Models.User;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -32,6 +33,8 @@ import java.awt.GridLayout;
 import java.util.List;
 
 public class ListAllProductsGUI extends JFrame {
+    private User user;
+
     private JLabel titleLabel;
 
     private JTextField searchField;
@@ -67,7 +70,7 @@ public class ListAllProductsGUI extends JFrame {
         return root;
     }
 
-    public ListAllProductsGUI() {
+    public ListAllProductsGUI(User user) {
         super("List All Products");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -76,9 +79,10 @@ public class ListAllProductsGUI extends JFrame {
 
         // Initialize ManageCatalog
         manageCatalog = new ManageCatalog();
+        this.user = user;
 
         // Menu Bar
-        MenuBarGUI menuBarGUI = new MenuBarGUI(this);
+        MenuBarGUI menuBarGUI = new MenuBarGUI(this, user);
         setJMenuBar(menuBarGUI);
 
         // Title

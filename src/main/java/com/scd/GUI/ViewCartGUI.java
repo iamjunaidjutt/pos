@@ -24,8 +24,11 @@ import javax.swing.table.DefaultTableModel;
 
 import com.scd.Business.ManageCart;
 import com.scd.Models.Item;
+import com.scd.Models.User;
 
 public class ViewCartGUI extends JFrame implements ActionListener {
+    private User user;
+
     private JTable table;
     private DefaultTableModel tableModel;
 
@@ -43,7 +46,7 @@ public class ViewCartGUI extends JFrame implements ActionListener {
 
     private double totalPrice = 0.0;
 
-    public ViewCartGUI() {
+    public ViewCartGUI(User user) {
         super("View Cart");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -51,9 +54,10 @@ public class ViewCartGUI extends JFrame implements ActionListener {
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
         manageCart = new ManageCart();
+        this.user = user;
 
         // Menu
-        MenuBarGUI menuBarGUI = new MenuBarGUI(this);
+        MenuBarGUI menuBarGUI = new MenuBarGUI(this, user);
         setJMenuBar(menuBarGUI);
 
         JPanel panel1 = new JPanel();
@@ -98,7 +102,7 @@ public class ViewCartGUI extends JFrame implements ActionListener {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     setVisible(false);
-                    new ListAllProductsGUI();
+                    new ListAllProductsGUI(user);
                 }
             });
             add(shopNowButton);

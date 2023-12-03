@@ -53,6 +53,32 @@ public class UserDAO implements DAO {
         }
     }
 
+    public User getUser(String username, String password) {
+        EntityManager em = getEntityManager();
+        try {
+            User user;
+            em.getTransaction().begin();
+            user = em
+                    .createQuery("SELECT u FROM User u WHERE u.username = :username AND u.password = :password",
+                            User.class)
+                    .setParameter("username", username)
+                    .setParameter("password", password)
+                    .getSingleResult();
+            em.getTransaction().commit();
+            return user;
+        } catch (NoResultException e) {
+            // No user found with the specified username and password
+            return null;
+        } catch (Exception e) {
+            System.out.println("Error reading user: " + e.getMessage());
+            return null;
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
     @Override
     public boolean update(Object obj) {
         User user = (User) obj;

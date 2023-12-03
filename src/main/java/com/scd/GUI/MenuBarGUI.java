@@ -1,95 +1,197 @@
 package com.scd.GUI;
 
 import javax.swing.*;
+
+import com.scd.Models.User;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 
 public class MenuBarGUI extends JMenuBar implements ActionListener {
+    private User user;
+    private JFrame parentFrame;
 
-    public MenuBarGUI(JFrame parentFrame) {
+    public MenuBarGUI(JFrame parentFrame, User user) {
+        this.user = user;
+        this.parentFrame = parentFrame;
+
         // Add a menu as File
-        JMenu fileMenu = new JMenu("File");
+        JMenu inventoryMenu = new JMenu("Inventory");
         // fileMenu.setMnemonic('F');
-        fileMenu.setMnemonic(KeyEvent.VK_F);
+        inventoryMenu.setMnemonic(KeyEvent.VK_I);
 
         // Create menu items for File menu
-        JMenuItem newSaleItem = new JMenuItem("New Sale");
-        JMenuItem openSaleItem = new JMenuItem("Open Sale");
-        JMenuItem saveSaleItem = new JMenuItem("Save Sale");
+        JMenuItem replenishItem = new JMenuItem("Replenish Inventory");
         JMenuItem exitItem = new JMenuItem("Exit");
 
         // Add menu items in File menu
-        fileMenu.add(newSaleItem);
-        fileMenu.add(openSaleItem);
-        fileMenu.add(saveSaleItem);
-        fileMenu.addSeparator();
-        fileMenu.add(exitItem);
+        inventoryMenu.add(replenishItem);
+        inventoryMenu.addSeparator();
+        inventoryMenu.add(exitItem);
 
         // Add action listeners to menu items in File menu
-        newSaleItem.addActionListener(this);
-        openSaleItem.addActionListener(this);
-        saveSaleItem.addActionListener(this);
+        replenishItem.addActionListener(this);
         exitItem.addActionListener(this);
 
         // Add a second menu as Item
-        JMenu itemMenu = new JMenu("Catalog");
-        itemMenu.setMnemonic('C');
+        JMenu catalogMenu = new JMenu("Catalog");
+        catalogMenu.setMnemonic('C');
 
         // Create menu Products for Item menu
-        JMenuItem newProduct = new JMenuItem("New Product");
-        JMenuItem deleteProduct = new JMenuItem("Delete Product");
-        JMenuItem updateProduct = new JMenuItem("Edit Product");
-        JMenuItem ListProducts = new JMenuItem("List All Products");
+        JMenuItem categories = new JMenuItem("Manage Categories");
+        JMenuItem products = new JMenuItem("Manage Products");
 
         // Add menu Products in Item menu
-        itemMenu.add(newProduct);
-        itemMenu.add(deleteProduct);
-        itemMenu.add(updateProduct);
-        itemMenu.add(ListProducts);
+        catalogMenu.add(categories);
+        catalogMenu.add(products);
 
         // Add action listeners to menu Products in Item menu
-        newProduct.addActionListener(this);
-        deleteProduct.addActionListener(this);
-        updateProduct.addActionListener(this);
-        ListProducts.addActionListener(this);
+        categories.addActionListener(this);
+        products.addActionListener(this);
 
-        // Add third menu as Inventory
-        JMenu inventoryMenu = new JMenu("Inventory");
+        // Add third menu for Sales
+        JMenu salesMenu = new JMenu("Sales");
+        salesMenu.setMnemonic('S');
+
+        // Create menu items for Sales menu
+        JMenuItem newSale = new JMenuItem("New Sale");
+        JMenuItem viewCart = new JMenuItem("View Cart");
+        JMenuItem viewOrders = new JMenuItem("View Orders");
+
+        // Add menu items in Sales menu
+        salesMenu.add(newSale);
+        salesMenu.add(viewCart);
+        salesMenu.add(viewOrders);
+
+        // Add action listeners to menu items in Sales menu
+        newSale.addActionListener(this);
+        viewCart.addActionListener(this);
+        viewOrders.addActionListener(this);
+
+        // Add fourth menu for Reports
+        JMenu reportsMenu = new JMenu("Reports");
+        reportsMenu.setMnemonic('R');
+
+        // Create menu items for Reports menu
+        JMenuItem dailySalesReport = new JMenuItem("Daily Sales Report");
+        JMenuItem weeklySalesReport = new JMenuItem("Weekly Sales Report");
+        JMenuItem monthlySalesReport = new JMenuItem("Monthly Sales Report");
+        JMenuItem inventoryReport = new JMenuItem("Inventory Report");
+
+        // Add menu items in Reports menu
+        reportsMenu.add(dailySalesReport);
+        reportsMenu.add(weeklySalesReport);
+        reportsMenu.add(monthlySalesReport);
+        reportsMenu.add(inventoryReport);
+
+        // Add action listeners to menu items in Reports menu
+        dailySalesReport.addActionListener(this);
+        weeklySalesReport.addActionListener(this);
+        monthlySalesReport.addActionListener(this);
+        inventoryReport.addActionListener(this);
 
         // Add menus in menu bar
-        add(fileMenu);
-        add(itemMenu);
+        add(inventoryMenu);
+        add(catalogMenu);
+        add(salesMenu);
+        add(reportsMenu);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();
         switch (command) {
-            case "New Sale":
-                System.out.println("New Sale");
-                break;
-            case "Open Sale":
-                System.out.println("Open Sale");
-                break;
-            case "Save Sale":
-                System.out.println("Save Sale");
+            case "Replenish Inventory":
+                System.out.println("Replenish Inventory");
+                System.out.println("User role: " + user.getRole());
+                if (user.getRole().equals("MANAGER")) {
+                    new ReplenishInventoryGUI(user);
+                    parentFrame.setVisible(false);
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot replenish inventory");
                 break;
             case "Exit":
                 System.out.println("Exit");
+                System.out.println("User role: " + user.getRole());
                 System.exit(0);
                 break;
-            case "New Item":
-                System.out.println("New Item");
+            case "Manage Categories":
+                System.out.println("Manage Categories");
+                System.out.println("User role: " + user.getRole());
+                if (user.getRole().equals("MANAGER")) {
+                    new ManageCategoriesGUI(user);
+                    parentFrame.setVisible(false);
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot manage categories");
                 break;
-            case "Delete Item":
-                System.out.println("Delete Item");
+            case "Manage Products":
+                System.out.println("Manage Products");
+                System.out.println("User role: " + user.getRole());
+                if (user.getRole().equals("MANAGER")) {
+                    new ManageProductsGUI(user);
+                    parentFrame.setVisible(false);
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot manage products");
                 break;
-            case "Update Item":
-                System.out.println("Update Item");
+            case "New Sale":
+                System.out.println("New Sale");
+                System.out.println("User role: " + user.getRole());
+                new ListAllProductsGUI(user);
+                parentFrame.setVisible(false);
                 break;
-            case "List Items":
-                System.out.println("List Items");
+            case "View Cart":
+                System.out.println("View Cart");
+                System.out.println("User role: " + user.getRole());
+                new ViewCartGUI(user);
+                parentFrame.setVisible(false);
+                break;
+            case "View Orders":
+                System.out.println("View Orders");
+                System.out.println("User role: " + user.getRole());
+                parentFrame.setVisible(false);
+                new ViewOrdersGUI(user);
+                break;
+            case "Daily Sales Report":
+                if (user.getRole().equals("MANAGER")) {
+                    System.out.println("Daily Sales Report");
+                    System.out.println("User role: " + user.getRole());
+                    new ListAllProductsGUI(user);
+                    parentFrame.setVisible(false);
+                    // new SalesReportGUI();
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot view daily sales report");
+                break;
+            case "Weekly Sales Report":
+                if (user.getRole().equals("MANAGER")) {
+                    System.out.println("Weekly Sales Report");
+                    System.out.println("User role: " + user.getRole());
+                    new ListAllProductsGUI(user);
+                    parentFrame.setVisible(false);
+                    // new SalesReportGUI();
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot view weekly sales report");
+                break;
+            case "Monthly Sales Report":
+                if (user.getRole().equals("MANAGER")) {
+                    System.out.println("Monthly Sales Report");
+                    System.out.println("User role: " + user.getRole());
+                    new ListAllProductsGUI(user);
+                    parentFrame.setVisible(false);
+                    // new SalesReportGUI();
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot view monthly sales report");
+                break;
+            case "Inventory Report":
+                if (user.getRole().equals("MANAGER")) {
+
+                    System.out.println("Inventory Report");
+                    System.out.println("User role: " + user.getRole());
+                    // new InventoryReportGUI();
+                    new ListAllProductsGUI(user);
+                    parentFrame.setVisible(false);
+                } else
+                    JOptionPane.showMessageDialog(null, user.getRole() + " cannot view inventory report");
                 break;
             default:
                 System.out.println("Unknown command");

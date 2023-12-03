@@ -18,6 +18,8 @@ import javax.swing.tree.TreePath;
 
 import com.scd.Business.ManageCatalog;
 import com.scd.Models.Category;
+import com.scd.Models.User;
+
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -26,7 +28,8 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CategoryManagementGUI extends JFrame implements ActionListener {
+public class ManageCategoriesGUI extends JFrame implements ActionListener {
+    private User user;
 
     private JPanel panel1;
     private JPanel panel2;
@@ -65,7 +68,7 @@ public class CategoryManagementGUI extends JFrame implements ActionListener {
         return root;
     }
 
-    public CategoryManagementGUI() {
+    public ManageCategoriesGUI(User user) {
         super("Category Management");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,9 +77,10 @@ public class CategoryManagementGUI extends JFrame implements ActionListener {
 
         // Initialize ManageCatalog
         manageCatalog = new ManageCatalog();
+        this.user = user;
 
         // Menu Bar
-        MenuBarGUI menuBarGUI = new MenuBarGUI(this);
+        MenuBarGUI menuBarGUI = new MenuBarGUI(this, user);
         setJMenuBar(menuBarGUI);
 
         panel2 = new JPanel();
@@ -231,11 +235,6 @@ public class CategoryManagementGUI extends JFrame implements ActionListener {
         });
 
         return tree;
-    }
-
-    public static void main(String[] args) {
-        CategoryManagementGUI categoryManagementGUI = new CategoryManagementGUI();
-        categoryManagementGUI.setVisible(true);
     }
 
     @Override

@@ -23,6 +23,7 @@ import javax.swing.table.DefaultTableModel;
 import com.scd.Business.ManageCatalog;
 import com.scd.Models.Category;
 import com.scd.Models.Product;
+import com.scd.Models.User;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -34,7 +35,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddProductGUI extends JFrame implements ActionListener {
+public class ManageProductsGUI extends JFrame implements ActionListener {
+    private User user;
     private JPanel formPanel;
 
     private JTable table;
@@ -69,7 +71,7 @@ public class AddProductGUI extends JFrame implements ActionListener {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    public AddProductGUI() {
+    public ManageProductsGUI(User user) {
         super("List All Products");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -79,9 +81,10 @@ public class AddProductGUI extends JFrame implements ActionListener {
         // Initialize ManageCatalog
         manageCatalog = new ManageCatalog();
         selectedCategories = new ArrayList<>();
+        this.user = user;
 
         // Menu Bar
-        MenuBarGUI menuBarGUI = new MenuBarGUI(this);
+        MenuBarGUI menuBarGUI = new MenuBarGUI(this, user);
         setJMenuBar(menuBarGUI);
 
         // Panels
