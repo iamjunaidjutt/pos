@@ -46,8 +46,9 @@ public class ItemDAOTest {
 
         assertTrue(itemDAO.save(item));
 
-        productDAO.delete(product.getCode());
-        itemDAO.delete(item.getCode());
+       
+        assertTrue(itemDAO.delete(item.getCode()));
+        assertTrue(productDAO.delete(product.getCode()));
     }
 
     @Test
@@ -75,8 +76,8 @@ public class ItemDAOTest {
         item.setPrice(100);
         assertTrue(itemDAO.update(item));
 
-        productDAO.delete(product.getCode());
-        itemDAO.delete(item.getCode());
+        assertTrue(itemDAO.delete(item.getCode()));
+        assertTrue(productDAO.delete(product.getCode()));
     }
 
     @Test
@@ -98,8 +99,7 @@ public class ItemDAOTest {
 
         assertTrue(itemDAO.delete(item.getCode()));
 
-        productDAO.delete(product.getCode());
-        itemDAO.delete(item.getCode());
+        assertTrue(productDAO.delete(product.getCode()));
     }
 
     @Test
@@ -123,8 +123,8 @@ public class ItemDAOTest {
         assertNotNull(retrievedItem);
         assertEquals(item.getCode(), retrievedItem.getCode());
 
-        productDAO.delete(product.getCode());
-        itemDAO.delete(item.getCode());
+        assertTrue(itemDAO.delete(item.getCode()));
+        assertTrue(productDAO.delete(product.getCode()));
     }
 
     @Test
@@ -139,7 +139,7 @@ public class ItemDAOTest {
         assertTrue(productDAO.save(product));
         assertTrue(itemDAO.saveItemWithProduct(item, product));
 
-        productDAO.delete(product.getCode());
-        itemDAO.delete(item.getCode());
+        assertTrue(itemDAO.delete(item.getCode()));
+        assertTrue(productDAO.delete(product.getCode()));
     }
 }
