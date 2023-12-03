@@ -2,6 +2,7 @@ package com.scd.Models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,7 +39,7 @@ public class Product {
     @Column(name = "p_expiration_date")
     private LocalDateTime expirationDate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @Cascade(CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
 

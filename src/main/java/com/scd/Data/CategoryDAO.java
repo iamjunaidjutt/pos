@@ -10,6 +10,7 @@ import javax.persistence.PersistenceException;
 
 import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Category;
+import com.scd.Models.Product;
 
 public class CategoryDAO implements DAO {
     public EntityManager getEntityManager() {
@@ -55,7 +56,6 @@ public class CategoryDAO implements DAO {
         }
     }
 
-
     public Category getById(int id) {
         EntityManager entityManager = getEntityManager();
         EntityTransaction transaction = entityManager.getTransaction();
@@ -100,7 +100,9 @@ public class CategoryDAO implements DAO {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(category);
+            Category category2 = entityManager.find(Category.class, category.getCode());
+            category2.setName(category.getName());
+            category2.setDescription(category.getDescription());
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -222,6 +224,7 @@ public class CategoryDAO implements DAO {
             Category subCategory2 = entityManager.find(Category.class, subCategory.getCode());
             category2.getSubcategories().remove(subCategory2);
             entityManager.merge(category2);
+            entityManager.remove(subCategory2);
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -229,6 +232,30 @@ public class CategoryDAO implements DAO {
             if (transaction.isActive() && transaction != null)
                 transaction.rollback();
             return false;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public void deleteProductFromCategories(Product product) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            List<Object> categories = getAll();
+            List<Category> categories2 = new ArrayList<>();
+            for (Object object : categories) {
+                categories2.add((Category) object);
+            }
+            for (Category category : categories2) {
+                category.getProducts().remove(product);
+                entityManager.merge(category);
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
         } finally {
             entityManager.close();
         }
