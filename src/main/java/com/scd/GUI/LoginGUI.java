@@ -18,6 +18,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import com.scd.Business.Login;
+import com.scd.Models.User;
 
 public class LoginGUI extends JFrame implements ActionListener {
     private JLabel titleLabel;
@@ -136,8 +137,10 @@ public class LoginGUI extends JFrame implements ActionListener {
             String password = new String(passwordChars);
 
             if (login.login(username, password)) {
-                Dashboard dashboard = new Dashboard();
-                dashboard.setVisible(true);
+                // Dashboard dashboard = new Dashboard();
+                // dashboard.setVisible(true);
+                User user = login.getUser(username, password);
+                new ListAllProductsGUI(user);
                 setVisible(false);
             } else if (username.equals("") || password.equals("")) {
                 JOptionPane.showMessageDialog(null, "Please fill in all fields");

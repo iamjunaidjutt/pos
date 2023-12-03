@@ -20,6 +20,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.scd.Business.ManageCart;
 import com.scd.Models.Orders;
+import com.scd.Models.User;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -28,7 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
-public class ViewOrders extends JFrame implements ActionListener {
+public class ViewOrdersGUI extends JFrame implements ActionListener {
+    private User user;
     private JLabel titleLabel;
 
     private JTextField searchField;
@@ -60,7 +62,7 @@ public class ViewOrders extends JFrame implements ActionListener {
     int orderId = -1;
     String status = "";
 
-    public ViewOrders() {
+    public ViewOrdersGUI(User user) {
         super("List All Products");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,9 +71,10 @@ public class ViewOrders extends JFrame implements ActionListener {
 
         // Initialize ManageCart
         manageCart = new ManageCart();
+        this.user = user;
 
         // Menu Bar
-        MenuBarGUI menuBarGUI = new MenuBarGUI(this);
+        MenuBarGUI menuBarGUI = new MenuBarGUI(this, user);
         setJMenuBar(menuBarGUI);
 
         // Title
@@ -243,11 +246,6 @@ public class ViewOrders extends JFrame implements ActionListener {
                         "[view]" });
             }
         }
-    }
-
-    public static void main(String[] args) {
-        ViewOrders listAllProducts = new ViewOrders();
-        listAllProducts.setVisible(true);
     }
 
     @Override
