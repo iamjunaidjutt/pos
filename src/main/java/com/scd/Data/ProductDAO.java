@@ -1,5 +1,6 @@
 package com.scd.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -7,6 +8,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 
 import com.scd.Helper.FactoryProvider;
+import com.scd.Models.Category;
 import com.scd.Models.Product;
 
 public class ProductDAO implements DAO {
@@ -21,7 +23,29 @@ public class ProductDAO implements DAO {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
+
+            // Clear categories from product to avoid duplicates
+            List<Category> categories = new ArrayList<>(product.getCategories());
+            product.getCategories().clear();
+
+            // Save the product
             entityManager.persist(product);
+
+            // Reattach categories
+            for (Category category : categories) {
+                // Check if the category is managed
+                if (!entityManager.contains(category)) {
+                    // If not, merge it
+                    category = entityManager.merge(category);
+                }
+
+                // Update the relationship on both sides
+                category.getProducts().add(product);
+                product.getCategories().add(category);
+
+                // No need to merge category again, as it's already managed
+            }
+
             transaction.commit();
             return true;
         } catch (Exception e) {
@@ -60,12 +84,33 @@ public class ProductDAO implements DAO {
         EntityTransaction transaction = entityManager.getTransaction();
         try {
             transaction.begin();
-            entityManager.merge(product);
+            // Clear categories from product to avoid duplicates
+            List<Category> categories = new ArrayList<>(product.getCategories());
+            product.getCategories().clear();
+
+            // Merge the product
+            product = entityManager.merge(product);
+
+            // Reattach categories
+            for (Category category : categories) {
+                // Check if the category is managed
+                if (!entityManager.contains(category)) {
+                    // If not, merge it
+                    category = entityManager.merge(category);
+                }
+
+                // Update the relationship on both sides
+                category.getProducts().add(product);
+                product.getCategories().add(category);
+
+                // No need to merge category again, as it's already managed
+            }
+
             transaction.commit();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
-            if (transaction.isActive() && transaction != null)
+            if (transaction != null && transaction.isActive())
                 transaction.rollback();
             return false;
         } finally {
@@ -80,9 +125,25 @@ public class ProductDAO implements DAO {
         try {
             transaction.begin();
             Product product = entityManager.find(Product.class, id);
-            entityManager.remove(product);
-            transaction.commit();
-            return true;
+            System.out.println("Product found: " + product);
+
+            if (product != null) {
+                product.getCategories().clear();
+
+                System.out.println("Categories cleared");
+
+                CategoryDAO categoryDAO = new CategoryDAO();
+                categoryDAO.deleteProductFromCategories(product);
+
+                entityManager.remove(product);
+                System.out.println("Product removed");
+
+                transaction.commit();
+                return true;
+            } else {
+                System.out.println("Product not found for id: " + id);
+                return false;
+            }
         } catch (Exception e) {
             e.printStackTrace();
             if (transaction.isActive() && transaction != null)
@@ -139,6 +200,26 @@ public class ProductDAO implements DAO {
                     .setParameter("id", id).getResultList();
             transaction.commit();
             return products;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public List<Category> getCategoriesByProduct(int id) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            List<Category> categories = entityManager
+                    .createQuery("select categories from Product where id = :id", Category.class)
+                    .setParameter("id", id).getResultList();
+            transaction.commit();
+            return categories;
         } catch (Exception e) {
             e.printStackTrace();
             if (transaction.isActive() && transaction != null)
