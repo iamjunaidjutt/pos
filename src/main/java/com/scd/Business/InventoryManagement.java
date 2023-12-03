@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import com.scd.Data.ProductDAO;
 import com.scd.Models.Item;
 import com.scd.Models.Product;
@@ -25,6 +27,8 @@ public class InventoryManagement {
                 productDAO.update(product);
                 if (checkLowStock(product)) {
                     System.out.println("Product " + product.getName() + " is low on stock. Please replenish.");
+                    JOptionPane.showMessageDialog(null,
+                            "Product " + product.getName() + " is low on stock. Please replenish.");
                 }
             }
             return true;
@@ -41,9 +45,11 @@ public class InventoryManagement {
         return false;
     }
 
-    public boolean replenishInventory(Product product, int quantity) {
+    public boolean replenishInventory(Product product, int quantity, LocalDateTime expirationDate, double price) {
         try {
             product.setStockQuantity(product.getStockQuantity() + quantity);
+            product.setExpirationDate(expirationDate);
+            product.setPrice(price);
             productDAO.update(product);
             return true;
         } catch (Exception e) {

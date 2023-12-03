@@ -85,12 +85,23 @@ public class ViewCartGUI extends JFrame implements ActionListener {
         items = manageCart.getCartItems();
         totalPrice = manageCart.getCartTotal();
 
-        getContentPane().removeAll();
-
         if (items == null || items.isEmpty()) {
+            getContentPane().removeAll();
             JLabel emptyCartLabel = new JLabel("Your cart is empty");
             emptyCartLabel.setAlignmentX(JComponent.CENTER_ALIGNMENT);
             add(emptyCartLabel);
+
+            JButton shopNowButton = new JButton("Shop Now");
+            shopNowButton.setAlignmentX(JComponent.CENTER_ALIGNMENT);
+            shopNowButton.setFocusable(false);
+            shopNowButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    setVisible(false);
+                    new ListAllProductsGUI();
+                }
+            });
+            add(shopNowButton);
         } else {
             JPanel panel2 = new JPanel();
             panel2.setPreferredSize(new Dimension(1200, 750));
@@ -225,10 +236,6 @@ public class ViewCartGUI extends JFrame implements ActionListener {
         table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
 
         scrollPane.setViewportView(table);
-    }
-
-    public static void main(String[] args) {
-        new ViewCartGUI();
     }
 
     @Override

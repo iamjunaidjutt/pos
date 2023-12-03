@@ -1,12 +1,9 @@
 package com.scd.GUI;
 
 import javax.swing.BoxLayout;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,6 +17,7 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import com.scd.Business.InventoryManagement;
 import com.scd.Business.ManageCatalog;
 import com.scd.Models.Category;
 import com.scd.Models.Product;
@@ -34,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class AddProductGUI extends JFrame implements ActionListener {
+public class ReplenishInventoryGUI extends JFrame implements ActionListener {
     private JPanel formPanel;
 
     private JTable table;
@@ -46,39 +44,29 @@ public class AddProductGUI extends JFrame implements ActionListener {
     private List<Product> products;
 
     private ManageCatalog manageCatalog;
+    private InventoryManagement inventoryManagement;
 
-    private JLabel pNameLabel, pDescriptionLabel, pPriceLabel, pStockQuantityLabel, pExpirationDateLabel,
-            pCategoriesLabel;
-    private JTextField pNameField, pDescriptionField, pPriceField, pStockQuantityField;
+    private JLabel pNameLabel, pPriceLabel, pStockQuantityLabel, pExpirationDateLabel;
+    private JTextField pNameField, pPriceField, pStockQuantityField;
 
     private JSpinner dateSpinner;
 
-    private JComboBox<String> categoriesComboBox;
-    private List<String> selectedCategories;
-
-    private JList<String> categoriesList;
-    private DefaultListModel<String> categoriesListModel;
-    private JScrollPane categoriesScrollPane;
-
-    private JButton removeButton;
-    private JButton addButton;
-    private JButton createButton;
     private JButton updateButton;
 
     private LocalDateTime convertToLocalDateTime(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 
-    public AddProductGUI() {
-        super("List All Products");
+    public ReplenishInventoryGUI() {
+        super("Replenish Inventory");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BoxLayout(getContentPane(), BoxLayout.Y_AXIS));
 
-        // Initialize ManageCatalog
+        // Initialize
+        inventoryManagement = new InventoryManagement(10);
         manageCatalog = new ManageCatalog();
-        selectedCategories = new ArrayList<>();
 
         // Menu Bar
         MenuBarGUI menuBarGUI = new MenuBarGUI(this);
@@ -100,28 +88,18 @@ public class AddProductGUI extends JFrame implements ActionListener {
                     if (selectedColumn == 7) {
                         try {
                             int productCode = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
-                            if (manageCatalog.deleteProduct(productCode)) {
-                                JOptionPane.showMessageDialog(null, "Product deleted successfully");
-                                updateProducts();
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Error deleting product");
-                            }
+                            Product product = manageCatalog.getProduct(productCode);
+                            pNameField.setText(product.getName());
+                            pPriceField.setText(String.valueOf(product.getPrice()));
+                            pStockQuantityField.setText(String.valueOf(product.getStockQuantity()));
+                            dateSpinner.setValue(Date.from(product.getExpirationDate().atZone(ZoneId.systemDefault())
+                                    .toInstant()));
+
                         } catch (Exception exception) {
                             System.out.println("Error: " + exception.getMessage());
                         }
                     } else {
-                        pNameField.setText(table.getValueAt(selectedRow, 1).toString());
-                        pDescriptionField.setText(table.getValueAt(selectedRow, 2).toString());
-                        pPriceField.setText(table.getValueAt(selectedRow, 4).toString());
-                        pStockQuantityField.setText(table.getValueAt(selectedRow, 5).toString());
-                        dateSpinner.setValue(table.getValueAt(selectedRow, 6));
-                        List<Category> categories = manageCatalog.getCategoriesByProduct(
-                                Integer.parseInt(table.getValueAt(selectedRow, 0).toString()));
-                        selectedCategories = new ArrayList<>();
-                        for (Category category : categories) {
-                            selectedCategories.add(category.getName());
-                        }
-                        updateListModel();
+                        JOptionPane.showMessageDialog(null, "Select a product to update");
                     }
                 }
             }
@@ -130,30 +108,14 @@ public class AddProductGUI extends JFrame implements ActionListener {
         setVisible(true);
     }
 
-    private void updateListModel() {
-        categoriesListModel = new DefaultListModel<>();
-        for (String selectedCategory : selectedCategories) {
-            categoriesListModel.addElement(selectedCategory);
-        }
-
-        if (categoriesList != null) {
-            categoriesList.setModel(categoriesListModel);
-            categoriesList.repaint();
-        } else {
-            categoriesList = new JList<>(categoriesListModel);
-        }
-    }
-
     public void displayForm() {
         formPanel = new JPanel();
         formPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
-        formPanel.setPreferredSize(new Dimension(1200, 150));
+        formPanel.setPreferredSize(new Dimension(1200, 50));
 
         pNameLabel = new JLabel("Product Name");
         pNameField = new JTextField(15);
-
-        pDescriptionLabel = new JLabel("Product Description");
-        pDescriptionField = new JTextField(15);
+        pNameField.setEditable(false);
 
         pPriceLabel = new JLabel("Product Price");
         pPriceField = new JTextField(15);
@@ -166,53 +128,18 @@ public class AddProductGUI extends JFrame implements ActionListener {
         JSpinner.DateEditor dateEditor = new JSpinner.DateEditor(dateSpinner, "dd.MM.yyyy");
         dateSpinner.setEditor(dateEditor);
 
-        pCategoriesLabel = new JLabel("Categories");
-
-        List<Category> categories = manageCatalog.getAllCategories();
-
-        updateListModel();
-
-        String[] categoriesArray = new String[categories.size()];
-        for (int i = 0; i < categories.size(); i++) {
-            categoriesArray[i] = categories.get(i).getName();
-        }
-        categoriesComboBox = new JComboBox<>(categoriesArray);
-
-        categoriesScrollPane = new JScrollPane(categoriesList);
-        categoriesScrollPane.setPreferredSize(new Dimension(200, 100));
-
-        addButton = new JButton("+");
-        addButton.setFocusable(false);
-        addButton.addActionListener(this);
-
-        removeButton = new JButton("-");
-        removeButton.setFocusable(false);
-        removeButton.addActionListener(this);
-
-        createButton = new JButton("Create");
-        createButton.setFocusable(false);
-        createButton.addActionListener(this);
-
         updateButton = new JButton("Update");
         updateButton.setFocusable(false);
         updateButton.addActionListener(this);
 
         formPanel.add(pNameLabel);
         formPanel.add(pNameField);
-        formPanel.add(pDescriptionLabel);
-        formPanel.add(pDescriptionField);
         formPanel.add(pPriceLabel);
         formPanel.add(pPriceField);
         formPanel.add(pStockQuantityLabel);
         formPanel.add(pStockQuantityField);
         formPanel.add(pExpirationDateLabel);
         formPanel.add(dateSpinner);
-        formPanel.add(pCategoriesLabel);
-        formPanel.add(categoriesScrollPane);
-        formPanel.add(removeButton);
-        formPanel.add(categoriesComboBox);
-        formPanel.add(addButton);
-        formPanel.add(createButton);
         formPanel.add(updateButton);
 
         add(formPanel);
@@ -235,11 +162,11 @@ public class AddProductGUI extends JFrame implements ActionListener {
                     new Object[] { product.getCode(), product.getName(), product.getDescription(), categories,
                             String.valueOf(product.getPrice()), String.valueOf(product.getStockQuantity()),
                             product.getExpirationDate(),
-                            "X" });
+                            "[Edit]" });
         }
 
         table = new JTable(tableModel);
-        table.setPreferredScrollableViewportSize(new Dimension(1200, 700));
+        table.setPreferredScrollableViewportSize(new Dimension(1200, 750));
         table.setFillsViewportHeight(true);
 
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
@@ -251,6 +178,7 @@ public class AddProductGUI extends JFrame implements ActionListener {
         table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
 
         ListSelectionModel selectionModel = table.getSelectionModel();
         selectionModel.addListSelectionListener(new ListSelectionListener() {
@@ -263,30 +191,17 @@ public class AddProductGUI extends JFrame implements ActionListener {
                     if (selectedColumn == 7) {
                         try {
                             int productCode = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
-                            if (manageCatalog.deleteProduct(productCode)) {
-                                JOptionPane.showMessageDialog(null, "Product deleted successfully");
-                                updateProducts();
-                            } else {
-                                JOptionPane.showMessageDialog(null, "Error deleting product");
-                            }
-                            table.revalidate();
-                            table.repaint();
+                            Product product = manageCatalog.getProduct(productCode);
+                            pNameField.setText(product.getName());
+                            pPriceField.setText(String.valueOf(product.getPrice()));
+                            pStockQuantityField.setText(String.valueOf(product.getStockQuantity()));
+                            dateSpinner.setValue(Date.from(product.getExpirationDate().atZone(ZoneId.systemDefault())
+                                    .toInstant()));
                         } catch (Exception exception) {
                             System.out.println("Error: " + exception.getMessage());
                         }
                     } else {
-                        pNameField.setText(table.getValueAt(selectedRow, 1).toString());
-                        pDescriptionField.setText(table.getValueAt(selectedRow, 2).toString());
-                        pPriceField.setText(table.getValueAt(selectedRow, 4).toString());
-                        pStockQuantityField.setText(table.getValueAt(selectedRow, 5).toString());
-                        dateSpinner.setValue(table.getValueAt(selectedRow, 6));
-                        List<Category> categories = manageCatalog.getCategoriesByProduct(
-                                Integer.parseInt(table.getValueAt(selectedRow, 0).toString()));
-                        selectedCategories = new ArrayList<>();
-                        for (Category category : categories) {
-                            selectedCategories.add(category.getName());
-                        }
-                        updateListModel();
+                        JOptionPane.showMessageDialog(null, "Select a product to update");
                     }
                 }
             }
@@ -315,7 +230,7 @@ public class AddProductGUI extends JFrame implements ActionListener {
                     new Object[] { product.getCode(), product.getName(), product.getDescription(), categories,
                             String.valueOf(product.getPrice()), String.valueOf(product.getStockQuantity()),
                             product.getExpirationDate(),
-                            "X" });
+                            "[Edit]" });
         }
 
         table.setPreferredScrollableViewportSize(new Dimension(1200, 700));
@@ -330,73 +245,35 @@ public class AddProductGUI extends JFrame implements ActionListener {
         table.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
         table.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+        table.getColumnModel().getColumn(7).setCellRenderer(centerRenderer);
         table.setModel(tableModel);
         scrollPane.setViewportView(table);
     }
 
     private void clearFields() {
         pNameField.setText("");
-        pDescriptionField.setText("");
         pPriceField.setText("");
         pStockQuantityField.setText("");
         dateSpinner.setValue(new Date());
-        selectedCategories = new ArrayList<>();
-        updateListModel();
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == addButton) {
-            System.out.println("Select category button clicked");
-            String selectedCategory = categoriesComboBox.getSelectedItem().toString();
-            selectedCategories.add(selectedCategory);
-            updateListModel();
-            System.out.println(selectedCategories);
-        } else if (e.getSource() == removeButton) {
-            System.out.println("Remove category button clicked");
-            String selectedCategory = categoriesComboBox.getSelectedItem().toString();
-            selectedCategories.remove(selectedCategory);
-            updateListModel();
-            System.out.println(selectedCategories);
-        } else if (e.getSource() == createButton) {
-            System.out.println("Create button clicked");
-            String productName = pNameField.getText();
-            String productDescription = pDescriptionField.getText();
-            double productPrice = Double.parseDouble(pPriceField.getText());
-            int productStockQuantity = Integer.parseInt(pStockQuantityField.getText());
-            List<Category> productCategories = new ArrayList<>();
-            for (String selectedCategory : selectedCategories) {
-                Category category = manageCatalog.getCategoryByName(selectedCategory);
-                productCategories.add(category);
-            }
-            if (manageCatalog.addProduct(productName, productDescription, productPrice, productStockQuantity,
-                    convertToLocalDateTime((Date) dateSpinner.getValue()),
-                    productCategories)) {
-                JOptionPane.showMessageDialog(null, "Product added successfully");
+        if (e.getSource() == updateButton) {
+            try {
+                int selectedRow = table.getSelectedRow();
+                int productCode = Integer.parseInt(table.getValueAt(selectedRow, 0).toString());
+                Product product = manageCatalog.getProduct(productCode);
+                double price = Double.parseDouble(pPriceField.getText());
+                int stockQuantity = Integer.parseInt(pStockQuantityField.getText());
+                LocalDateTime expirationDate = convertToLocalDateTime((Date) dateSpinner.getValue());
+                inventoryManagement.replenishInventory(product, stockQuantity, expirationDate, price);
                 updateProducts();
-            } else {
-                JOptionPane.showMessageDialog(null, "Error adding product");
-            }
-            clearFields();
-        } else if (e.getSource() == updateButton) {
-            System.out.println("Update button clicked");
-            int productCode = Integer.parseInt(table.getValueAt(table.getSelectedRow(), 0).toString());
-            String productName = pNameField.getText();
-            String productDescription = pDescriptionField.getText();
-            double productPrice = Double.parseDouble(pPriceField.getText());
-            int productStockQuantity = Integer.parseInt(pStockQuantityField.getText());
-            List<Category> productCategories = new ArrayList<>();
-            for (String selectedCategory : selectedCategories) {
-                Category category = manageCatalog.getCategoryByName(selectedCategory);
-                productCategories.add(category);
-            }
-            if (manageCatalog.updateProduct(productCode, productName, productDescription, productPrice,
-                    productStockQuantity,
-                    convertToLocalDateTime((Date) dateSpinner.getValue()),
-                    productCategories)) {
                 JOptionPane.showMessageDialog(null, "Product updated successfully");
-                updateProducts();
-            } else {
+                // Track expiration dates
+                inventoryManagement.trackExpirationDates();
+            } catch (Exception exception) {
+                System.out.println("Error: " + exception.getMessage());
                 JOptionPane.showMessageDialog(null, "Error updating product");
             }
             clearFields();
