@@ -1,4 +1,5 @@
 package com.scd;
+
 import static org.junit.Assert.*;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -30,7 +31,7 @@ public class ManageCatalogTest {
     @AfterClass
     public static void tearDown() {
         // You may add cleanup logic here if needed
-        
+
     }
 
     @Test
@@ -53,7 +54,7 @@ public class ManageCatalogTest {
         categoryDAO.save(parentCategory);
         categoryDAO.save(subCategory);
 
-        manageCatalog.addSubCategory(parentCategory, subCategory);
+        manageCatalog.addSubCategory(parentCategory.getCode(), subCategory);
 
         assertNotNull(manageCatalog.getAllSubCategories(parentCategory));
 
@@ -98,25 +99,26 @@ public class ManageCatalogTest {
 
         assertTrue(manageCatalog.deleteCategory(category.getCode()));
     }
+
     @Test
     public void testDeleteSubCategory() {
         Category parentCategory = new Category();
         parentCategory.setName("ParentCategory1024");
         parentCategory.setDescription("Parent Description1024");
-    
+
         Category subCategory = new Category();
         subCategory.setName("SubCategory1024");
         subCategory.setDescription("Sub Description1024");
-    
+
         assertTrue(categoryDAO.save(parentCategory));
         assertTrue(categoryDAO.save(subCategory));
-    
-        assertTrue(manageCatalog.addSubCategory(parentCategory, subCategory));
+
+        assertTrue(manageCatalog.addSubCategory(parentCategory.getCode(), subCategory));
         assertTrue(manageCatalog.deleteSubCategory(parentCategory, subCategory));
-    
+
         assertTrue(categoryDAO.delete(parentCategory.getCode()));
         assertTrue(categoryDAO.delete(subCategory.getCode()));
-    }    
+    }
 
     @Test
     public void testGetAllProducts() {
@@ -138,4 +140,3 @@ public class ManageCatalogTest {
         productDAO.delete(product.getCode());
     }
 }
-
