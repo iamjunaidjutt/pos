@@ -40,7 +40,7 @@ public class OrderDetailsGUI extends JFrame implements ActionListener {
     private JButton exportButton;
 
     public OrderDetailsGUI(Orders order) {
-        super("List All Products");
+        super("Order Details");
         setSize(500, 600);
         // setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);

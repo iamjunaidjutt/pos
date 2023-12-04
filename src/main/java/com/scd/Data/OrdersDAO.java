@@ -1,5 +1,6 @@
 package com.scd.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -106,6 +107,26 @@ public class OrdersDAO implements DAO {
             if (transaction.isActive() && transaction != null)
                 transaction.rollback();
             return false;
+        } finally {
+            entityManager.close();
+        }
+    }
+
+    public List<Orders> getOrdersByDate(LocalDateTime to, LocalDateTime from) {
+        EntityManager entityManager = getEntityManager();
+        EntityTransaction transaction = entityManager.getTransaction();
+        try {
+            transaction.begin();
+            List<Orders> orders = entityManager
+                    .createQuery("from Orders where order_date between :to and :from", Orders.class)
+                    .setParameter("to", to).setParameter("from", from).getResultList();
+            transaction.commit();
+            return orders;
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (transaction.isActive() && transaction != null)
+                transaction.rollback();
+            return null;
         } finally {
             entityManager.close();
         }

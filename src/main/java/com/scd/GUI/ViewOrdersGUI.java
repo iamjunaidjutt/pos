@@ -63,7 +63,7 @@ public class ViewOrdersGUI extends JFrame implements ActionListener {
     String status = "";
 
     public ViewOrdersGUI(User user) {
-        super("List All Products");
+        super("View Orders");
         setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
