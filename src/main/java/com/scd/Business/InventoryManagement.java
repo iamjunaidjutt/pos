@@ -38,6 +38,10 @@ public class InventoryManagement {
         }
     }
 
+    public int getthreshold() {
+        return this.threshold;
+    }
+
     private boolean checkLowStock(Product product) {
         if (product.getStockQuantity() < threshold) {
             return true;

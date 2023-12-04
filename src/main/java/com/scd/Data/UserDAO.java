@@ -190,4 +190,27 @@ public class UserDAO implements DAO {
         }
     }
 
+    public int getUserId(String username, String password) {
+        EntityManager em = getEntityManager();
+        try {
+            em.getTransaction().begin();
+            TypedQuery<User> query = em.createQuery(
+                    "SELECT u FROM User u WHERE u.username = :username AND u.password = :password",
+                    User.class)
+                    .setParameter("username", username)
+                    .setParameter("password", password)
+                    .setMaxResults(1);
+            User user = query.getSingleResult();
+            em.getTransaction().commit();
+            return (user != null) ? user.getId() : -1;
+        } catch (Exception e) {
+            System.out.println("Error fetching user id: " + e.getMessage());
+            return -1;
+        } finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
 }
