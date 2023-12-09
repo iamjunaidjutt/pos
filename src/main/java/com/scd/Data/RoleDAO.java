@@ -9,6 +9,10 @@ import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Role;
 
 public class RoleDAO implements DAO {
+
+    /**
+     * @return EntityManager
+     */
     public EntityManager getEntityManager() {
         return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }

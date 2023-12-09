@@ -40,6 +40,9 @@ public class Category {
     @Cascade(CascadeType.ALL)
     private List<Product> products = new ArrayList<>();
 
+    /**
+     * @return int
+     */
     public int getCode() {
         return code;
     }

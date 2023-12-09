@@ -7,6 +7,9 @@ public class InvoiceData {
     double total;
     int quantity;
 
+    /**
+     * @return int
+     */
     public int getCode() {
         return code;
     }

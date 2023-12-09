@@ -6,6 +6,9 @@ import javax.persistence.Persistence;
 public class FactoryProvider {
     public static javax.persistence.EntityManagerFactory emf;
 
+    /**
+     * @return EntityManagerFactory
+     */
     public static EntityManagerFactory getFactory() {
         if (emf == null) {
             emf = Persistence.createEntityManagerFactory("pu");

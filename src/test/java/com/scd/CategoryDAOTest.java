@@ -25,27 +25,25 @@ public class CategoryDAOTest {
 
     // @After
     // public void tearDown() {
-    //     // to clean after  each
-    //     for (int categoryCode : addedCategoryCodes) {
-    //         categoryDAO.delete(categoryCode);
-    //     }
-    //     addedCategoryCodes.clear();
+    // // to clean after each
+    // for (int categoryCode : addedCategoryCodes) {
+    // categoryDAO.delete(categoryCode);
+    // }
+    // addedCategoryCodes.clear();
     // }
 
-//     @After
-// public void tearDown() {
-//     // To clean up after each test
-//     for (int categoryCode : addedCategoryCodes) {
-//         Category category = categoryDAO.getById(categoryCode);
-//         if (category != null) {
-//             categoryDAO.delete(category.getCode());
-//         }
-//     }
-//     addedCategoryCodes.clear();
-// }
+    // @After
+    // public void tearDown() {
+    // // To clean up after each test
+    // for (int categoryCode : addedCategoryCodes) {
+    // Category category = categoryDAO.getById(categoryCode);
+    // if (category != null) {
+    // categoryDAO.delete(category.getCode());
+    // }
+    // }
+    // addedCategoryCodes.clear();
+    // }
 
-
-    
     @Test
     public void testSave() {
         Category category = new Category();
@@ -53,7 +51,7 @@ public class CategoryDAOTest {
 
         assertTrue(categoryDAO.save(category));
         addedCategoryCodes.add(category.getCode());
-        
+
         categoryDAO.delete(category.getCode());
     }
 
@@ -78,12 +76,12 @@ public class CategoryDAOTest {
 
     // @Test
     // public void testDelete() {
-    //     Category category = new Category();
-    //     category.setName("Test Category");
-    //     categoryDAO.save(category);
+    // Category category = new Category();
+    // category.setName("Test Category");
+    // categoryDAO.save(category);
 
-    //     assertTrue(categoryDAO.delete(category.getCode()));
-    //     addedCategoryCodes.remove(Integer.valueOf(category.getCode()));
+    // assertTrue(categoryDAO.delete(category.getCode()));
+    // addedCategoryCodes.remove(Integer.valueOf(category.getCode()));
     // }
 
     @Test
@@ -100,4 +98,3 @@ public class CategoryDAOTest {
         categoryDAO.delete(category.getCode());
     }
 }
-

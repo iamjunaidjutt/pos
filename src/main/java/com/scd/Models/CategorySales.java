@@ -14,6 +14,9 @@ public class CategorySales {
     public CategorySales() {
     }
 
+    /**
+     * @return String
+     */
     public String getName() {
         return name;
     }

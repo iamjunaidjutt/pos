@@ -40,6 +40,9 @@ public class Item {
     @JoinColumn(name = "order_id")
     private Orders order;
 
+    /**
+     * @return Product
+     */
     public Product getProduct() {
         return product;
     }

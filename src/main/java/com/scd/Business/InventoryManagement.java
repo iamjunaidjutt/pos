@@ -19,6 +19,10 @@ public class InventoryManagement {
         this.threshold = threshold;
     }
 
+    /**
+     * @param items
+     * @return boolean
+     */
     public boolean updateInventory(List<Item> items) {
         try {
             for (Item item : items) {

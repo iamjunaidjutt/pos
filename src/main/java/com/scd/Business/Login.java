@@ -10,6 +10,11 @@ public class Login {
         this.userDAO = new UserDAO();
     }
 
+    /**
+     * @param username
+     * @param password
+     * @return boolean
+     */
     public boolean login(String username, String password) {
         return userDAO.userAuthenticate(username, password);
     }

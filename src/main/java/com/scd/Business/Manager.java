@@ -7,6 +7,10 @@ public class Manager extends Role {
         this.role = "MANAGER";
     }
 
+    /**
+     * @param permission
+     * @return boolean
+     */
     @Override
     public boolean permission(String permission) {
         return permission.equals("process_order_transaction") || permission.equals("view_inventory")

@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -35,6 +34,9 @@ public class User {
     @JoinColumn(name = "role_id")
     private Role role;
 
+    /**
+     * @return String
+     */
     @Override
     public String toString() {
         return "User [id=" + id + ", username=" + username + ", password=" + password + ", role=" + role + "]";

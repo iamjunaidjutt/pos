@@ -10,6 +10,10 @@ public class Register {
         this.userDAO = new UserDAO();
     }
 
+    /**
+     * @param user
+     * @return boolean
+     */
     public boolean register(User user) {
         System.out.println(user);
         return userDAO.save(user);

@@ -58,6 +58,9 @@ public class HomeGUI extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == loginButton) {

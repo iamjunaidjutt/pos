@@ -52,6 +52,11 @@ public class ManageCategoriesGUI extends JFrame implements ActionListener {
 
     private Category parentCategory;
 
+    /**
+     * @param root
+     * @param categories
+     * @return DefaultMutableTreeNode
+     */
     private DefaultMutableTreeNode addNodes(DefaultMutableTreeNode root, List<Category> categories) {
         for (Category category : categories) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(

@@ -10,6 +10,10 @@ import com.scd.Helper.FactoryProvider;
 import com.scd.Models.Cart;
 
 public class CartDAO implements DAO {
+
+    /**
+     * @return EntityManager
+     */
     public EntityManager getEntityManager() {
         return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }

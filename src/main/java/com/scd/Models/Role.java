@@ -24,6 +24,9 @@ public class Role {
     @Column(name = "user_role")
     protected String role;
 
+    /**
+     * @return String
+     */
     @Override
     public String toString() {
         return "Role [id=" + id + ", role=" + role + "]";

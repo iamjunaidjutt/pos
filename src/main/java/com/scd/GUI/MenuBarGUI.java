@@ -98,6 +98,9 @@ public class MenuBarGUI extends JMenuBar implements ActionListener {
         add(reportsMenu);
     }
 
+    /**
+     * @param e
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         String command = e.getActionCommand();

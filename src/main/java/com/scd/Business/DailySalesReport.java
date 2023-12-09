@@ -14,6 +14,11 @@ import com.scd.Models.Orders;
 
 public class DailySalesReport {
 
+    /**
+     * @param to
+     * @param from
+     * @return List<CategorySales>
+     */
     public List<CategorySales> getCategoriesSales(LocalDateTime to, LocalDateTime from) {
         List<CategorySales> categoriesSales = new ArrayList<>();
         List<Object> categoriesObjects = new CategoryDAO().getAll();

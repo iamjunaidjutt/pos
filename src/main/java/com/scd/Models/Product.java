@@ -43,6 +43,9 @@ public class Product {
     @Cascade(CascadeType.ALL)
     private List<Category> categories = new ArrayList<>();
 
+    /**
+     * @return int
+     */
     public int getCode() {
         return code;
     }

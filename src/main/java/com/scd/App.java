@@ -14,6 +14,10 @@ import com.scd.Models.User;
  *
  */
 public class App {
+
+    /**
+     * @param args
+     */
     public static void main(String[] args) {
         HomeGUI homeGUI = new HomeGUI();
         homeGUI.setVisible(true);

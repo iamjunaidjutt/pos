@@ -14,6 +14,11 @@ public class ManageCatalog {
     public ManageCatalog() {
     }
 
+    /**
+     * @param name
+     * @param description
+     * @return boolean
+     */
     public boolean addCategory(String name, String description) {
         CategoryDAO categoryDAO = new CategoryDAO();
         // check if category already exists

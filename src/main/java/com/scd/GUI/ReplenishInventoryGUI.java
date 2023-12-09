@@ -55,6 +55,10 @@ public class ReplenishInventoryGUI extends JFrame implements ActionListener {
 
     private JButton updateButton;
 
+    /**
+     * @param date
+     * @return LocalDateTime
+     */
     private LocalDateTime convertToLocalDateTime(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }

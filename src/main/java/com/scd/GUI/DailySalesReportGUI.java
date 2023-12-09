@@ -53,6 +53,10 @@ public class DailySalesReportGUI extends JFrame implements ActionListener {
 
     private List<CategorySales> categoriesSales;
 
+    /**
+     * @param date
+     * @return LocalDateTime
+     */
     private LocalDateTime convertToLocalDateTime(Date date) {
         return date.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }

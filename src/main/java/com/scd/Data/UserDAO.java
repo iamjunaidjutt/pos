@@ -11,6 +11,10 @@ import com.scd.Helper.FactoryProvider;
 import com.scd.Models.User;
 
 public class UserDAO implements DAO {
+
+    /**
+     * @return EntityManager
+     */
     public EntityManager getEntityManager() {
         return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }

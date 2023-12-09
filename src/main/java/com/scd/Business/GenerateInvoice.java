@@ -27,6 +27,9 @@ public class GenerateInvoice {
         this.order = order;
     }
 
+    /**
+     * @return boolean
+     */
     public boolean generate() {
         System.out.println("Invoice generated");
         hm.put("id", order.getId());

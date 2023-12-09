@@ -21,6 +21,11 @@ public class ManageCart {
         cartDAO = new CartDAO();
     }
 
+    /**
+     * @param productId
+     * @param quantityOrdered
+     * @return boolean
+     */
     public boolean addItemToCart(int productId, int quantityOrdered) {
         ManageCatalog manageCatalog = new ManageCatalog();
         try {

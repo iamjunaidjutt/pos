@@ -27,6 +27,9 @@ public class Cart {
     @Cascade(CascadeType.ALL)
     private List<Item> items = new ArrayList<>();
 
+    /**
+     * @return int
+     */
     public int getId() {
         return id;
     }

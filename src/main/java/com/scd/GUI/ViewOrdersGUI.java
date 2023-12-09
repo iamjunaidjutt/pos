@@ -143,6 +143,9 @@ public class ViewOrdersGUI extends JFrame implements ActionListener {
         setVisible(true);
     }
 
+    /**
+     * @return JScrollPane
+     */
     public JScrollPane displayOrders() {
         orders = manageCart.getOrders();
 

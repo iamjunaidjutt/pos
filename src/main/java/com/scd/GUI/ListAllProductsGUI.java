@@ -56,6 +56,11 @@ public class ListAllProductsGUI extends JFrame {
 
     private ManageCatalog manageCatalog;
 
+    /**
+     * @param root
+     * @param categories
+     * @return DefaultMutableTreeNode
+     */
     private DefaultMutableTreeNode addNodes(DefaultMutableTreeNode root, List<Category> categories) {
         for (Category category : categories) {
             DefaultMutableTreeNode node = new DefaultMutableTreeNode(category.getName());

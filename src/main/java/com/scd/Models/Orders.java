@@ -39,6 +39,9 @@ public class Orders {
     @Cascade(CascadeType.ALL)
     private List<Item> items = new ArrayList<>();
 
+    /**
+     * @return Customer
+     */
     public Customer getCustomer() {
         return customer;
     }

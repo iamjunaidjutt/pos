@@ -13,6 +13,10 @@ import com.scd.Models.Category;
 import com.scd.Models.Product;
 
 public class CategoryDAO implements DAO {
+
+    /**
+     * @return EntityManager
+     */
     public EntityManager getEntityManager() {
         return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }

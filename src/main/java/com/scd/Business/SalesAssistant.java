@@ -7,6 +7,10 @@ public class SalesAssistant extends Role {
         this.role = "SALES_ASSISTANT";
     }
 
+    /**
+     * @param permission
+     * @return boolean
+     */
     @Override
     public boolean permission(String permission) {
         return permission.equals("process_order_transaction") || permission.equals("view_inventory")

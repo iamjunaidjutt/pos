@@ -11,6 +11,10 @@ import com.scd.Models.Item;
 import com.scd.Models.Product;
 
 public class ItemDAO implements DAO {
+
+    /**
+     * @return EntityManager
+     */
     public EntityManager getEntityManager() {
         return ((EntityManagerFactory) FactoryProvider.getFactory()).createEntityManager();
     }

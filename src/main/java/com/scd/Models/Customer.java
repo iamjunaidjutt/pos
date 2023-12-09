@@ -8,6 +8,9 @@ public class Customer {
     @Column(name = "c_name")
     private String name;
 
+    /**
+     * @return String
+     */
     public String getName() {
         return name;
     }
