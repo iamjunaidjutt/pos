@@ -31,7 +31,7 @@ public class RegitserTest {
 
     @Test
     public void testCheckUsername() {
-        assertTrue(userDAO.checkUsername("adm"));
+        assertTrue(userDAO.checkUsername("admin1"));
     }
 
     @Test
