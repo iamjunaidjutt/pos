@@ -16,7 +16,7 @@ public class LoginTest {
 
     @Test
     public void testLoginValidCredentials() {
-        assertTrue(login.login("adm", "123123"));
+        assertTrue(login.login("admin1", "admin123123"));
     }
 
     @Test
@@ -26,12 +26,12 @@ public class LoginTest {
 
     @Test
     public void testUserRoleValidCredentials() {
-        assertEquals("MANAGER",login.userRole("adm", "123123"));
+        assertEquals("MANAGER",login.userRole("admin1", "admin123123"));
     }
 
     @Test
     public void testUserRoleInvalidCredentials() {
-        assertNotEquals("SALES_ASSISSTANT",login.userRole("adm", "123123"));
+        assertNotEquals("SALES_ASSISSTANT",login.userRole("admin1", "admin123123"));
     }
 }
 
